@@ -1,6 +1,6 @@
 # HopperLang
 
-<img src="hopper.png" alt="grace hopper" height="200px" />
+![grace hopper](hopper.png)
 
 ## Why Grace Hopper?
 
