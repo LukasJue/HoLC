@@ -1,0 +1,39 @@
+signal input (
+    clk     hilo
+    reset   hilo
+    x       int8
+)
+
+signal output (
+    y   int8
+)
+
+automat example do
+
+    state s0 do
+        when (x=1) and not (x=2) goto s1
+        y=0
+    end
+
+    state s1 do
+        when (x=1) goto s2
+        when (x=3) goto s2
+    end
+
+    state s2 do
+        when (x=0) goto s1
+        when (x=1) goto s0
+
+        y=0
+    end
+
+    state s3 do
+        when (x=1) do
+            when (x=4)     goto s0
+            when not (x=0) goto s1
+        end
+
+        x=1
+    end 
+
+end
