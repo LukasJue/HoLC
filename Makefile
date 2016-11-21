@@ -1,20 +1,39 @@
-hopperlang: main.o hopperlang.tab.o lex.yy.o
-	gcc -o hopperlang main.o hopperlang.tab.o lex.yy.o
+RM   := rm -rf
 
-main.o : main.c
-	gcc -c main.c
+CC   := gcc
+LEX  := flex
+YY   := bison
 
-hopperlang.tab.o : hopperlang.tab.c hopperlang.tab.h
-	gcc -c hopperlang.tab.c
+CFLAGS :=
+LFLAGS :=
+YFLAGS :=
 
-lex.yy.o : lex.yy.c hopperlang.tab.h
-	gcc -c lex.yy.c
+NAME := hopperlang
 
-lex.yy.c : hopperlang.l
-	flex hopperlang.l
+.PHONY: clean dist-clean $(NAME)
 
-hopperlang.tab.c : hopperlang.y
-	bison -d hopperlang.y
+all: clean $(NAME)
+
+$(NAME): main.o $(NAME).tab.o lex.yy.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+main.o: main.c
+	$(CC) $(CFLAGS) -c $@ $<
+
+.tab.o: $(NAME).tab.c $(NAME).tab.h
+	$(CC) $(CFLAGS) -c $<
+
+.yy.o : lex.yy.c $(NAME).tab.h
+	$(CC) $(CFLAGS) -c $<
+
+lex.yy.c : $(NAME).l
+	$(LEX) $(LFLAGS) $<
+
+$(NAME).tab.c : $(NAME).y
+	$(YY) $(YFLAGS) -d $<
 
 clean:
-	rm -f hopperlang hopperlang.tab.c hopperlang.tab.h lex.yy.c *.o
+	$(RM) *.tab.{c,h} lex.yy.c *.o
+
+dist-clean: clean
+	$(RM) $(NAME)
