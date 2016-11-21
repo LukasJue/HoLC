@@ -1,4 +1,11 @@
-input (
+# declaration of signals can be line-wise or block-wise
+
+# signal input clk hilo
+# signal input reset hilo
+# signal input x int8
+
+# output and input blocks can only appear outside of automat block
+signal input (
     clk     hilo
     reset   hilo
     x       int8
@@ -7,6 +14,9 @@ input (
 output (
     y   int8
 )
+
+# signal local declaration can appear outside and inside of automat block
+signal local z int8
 
 automat example do
 
@@ -29,8 +39,8 @@ automat example do
 
     state s3 do
         when (x=1) do
-            when (x=4)     goto s0
-            when not (x=0) goto s1
+            when (y=4)     goto s0
+            when not (y=0) goto s1
         end
 
         x=1
