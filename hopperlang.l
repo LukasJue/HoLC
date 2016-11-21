@@ -21,8 +21,8 @@ int tokenvalue = NOTHING;
 "do"            { return (OPENING_BLOCK); }
 "end"           { return (CLOSING_BLOCK); }
 
-"signal input"  { return (INPUT_BLOCK); }
-"signal output" { return (OUTPUT_BLOCK); }
+"input"  		{ return (INPUT_BLOCK); }
+"output" 		{ return (OUTPUT_BLOCK); }
 "automat"       { return (AUTOMAT_DECLARATION); }
 
 "state"         { return (STATE_DECLARATION); }
