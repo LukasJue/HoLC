@@ -1,10 +1,10 @@
-signal input (
+input (
     clk     hilo
     reset   hilo
     x       int8
 )
 
-signal output (
+output (
     y   int8
 )
 
