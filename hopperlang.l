@@ -14,7 +14,7 @@ int tokenvalue = NOTHING;
 [0-9]+          { tokenvalue = strtol(yytext, NULL, 10);
 				  return (NUMBER); 
 				}
-[a-zA-Z][a-zA-Z0-9]+	{	tokentext = strdup(yytext);
+[a-zA-Z][a-zA-Z0-9]*	{	tokentext = strdup(yytext);
 				return (NAME); }
 "="             { return (ASSIGNMENT); }
 
