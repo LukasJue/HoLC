@@ -15,17 +15,17 @@ int tokenvalue = NOTHING;
 				}
 "="             { return (ASSIGNMENT); }
 
-"("             { return (OPENING_BRACKET); }
-")"             { return (CLOSING_BRACKET); }
+"("             { return (OPEN_BRACKET); }
+")"             { return (CLOSE_BRACKET); }
 
-"do"            { return (OPENING_BLOCK); }
-"end"           { return (CLOSING_BLOCK); }
+"do"            { return (OPEN_BLOCK); }
+"end"           { return (CLOSE_BLOCK); }
 
-"input"  		{ return (INPUT_BLOCK); }
-"output" 		{ return (OUTPUT_BLOCK); }
-"automat"       { return (AUTOMAT_DECLARATION); }
+"input"  	{ return (INPUT_BLOCK); }
+"output" 	{ return (OUTPUT_BLOCK); }
+"automat"       { return (AUTOMAT); }
 
-"state"         { return (STATE_DECLARATION); }
+"state"         { return (STATE); }
 "when"          { return (CONDITION); }
 "not"           { return (NEGATION); }
 "goto"          { return (TRANSITION); }
