@@ -34,6 +34,9 @@ int tokenvalue = NOTHING;
 "when"          { return (CONDITION); }
 "not"           { return (NEGATION); }
 "goto"          { return (TRANSITION); }
+"and"		{ return (AND); }
+"or"		{ return (OR); }
+"xor"		{ return (XOR); }
 
 "#"		{ return (COMMENT); }
 

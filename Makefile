@@ -18,7 +18,7 @@ $(NAME): main.o $(NAME).tab.o lex.yy.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 main.o: main.c
-	$(CC) $(CFLAGS) -c $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 .tab.o: $(NAME).tab.c $(NAME).tab.h
 	$(CC) $(CFLAGS) -c $<
@@ -33,7 +33,7 @@ $(NAME).tab.c : $(NAME).y
 	$(YY) $(YFLAGS) -d $<
 
 clean:
-	$(RM) *.tab.{c,h} lex.yy.c *.o
+	$(RM) *.tab.{c,h} lex.yy.c *.o hopperlang
 
 dist-clean: clean
 	$(RM) $(NAME)
