@@ -4,23 +4,17 @@
 
 char* tokentext = NOTHING;
 int tokenvalue = NOTHING;
-
+int line_number = 1;
 %}
 
 %%
 
 [ \t]			; /*whitespace and tab dont matter*/
-\n              { return (NEWLINE); }
+\n              { line_number++; return (NEWLINE); }
 [0-9]+          { tokenvalue = strtol(yytext, NULL, 10);
 				  return (NUMBER); 
 				}
-[a-zA-Z][a-zA-Z0-9]*	{	tokentext = strdup(yytext);
-				return (NAME); }
-"="             { return (ASSIGNMENT); }
-
-"("             { return (OPEN_BRACKET); }
-")"             { return (CLOSE_BRACKET); }
-
+(#.*)|(\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/) {}
 "do"            { return (OPEN_BLOCK); }
 "end"           { return (CLOSE_BLOCK); }
 
@@ -38,7 +32,12 @@ int tokenvalue = NOTHING;
 "or"		{ return (OR); }
 "xor"		{ return (XOR); }
 
-"#"		{ return (COMMENT); }
+[a-zA-Z][a-zA-Z0-9]*	{	tokentext = strdup(yytext);
+				return (NAME); }
+"="             { return (ASSIGNMENT); }
+
+"("             { return (OPEN_BRACKET); }
+")"             { return (CLOSE_BRACKET); }
 
 .				{  tokenvalue = yytext[0];
 				  return (NOTHING);

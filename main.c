@@ -2,9 +2,9 @@
 #include <stdlib.h>
 
 extern int yyparse (void);
-
+extern int line_number;
  void yyerror (char const *s) {
-   fprintf (stderr, "%s\n", s);
+   fprintf (stderr, "err in line %i: %s\n",line_number, s);
  }
 
  int yywrap() {
