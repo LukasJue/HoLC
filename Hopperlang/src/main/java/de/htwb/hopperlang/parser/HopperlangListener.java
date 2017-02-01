@@ -1,4 +1,4 @@
-// Generated from C:/Users/juene/IdeaProjects/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
+// Generated from C:/Users/juene/Git/hopperlang/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
 package de.htwb.hopperlang.parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -37,6 +37,16 @@ public interface HopperlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSignal_declaration(HopperlangParser.Signal_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#signal_modifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterSignal_modifier(HopperlangParser.Signal_modifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#signal_modifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitSignal_modifier(HopperlangParser.Signal_modifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#signal_value_list}.
 	 * @param ctx the parse tree
@@ -108,6 +118,16 @@ public interface HopperlangListener extends ParseTreeListener {
 	 */
 	void exitState_body_element(HopperlangParser.State_body_elementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#transition}.
+	 * @param ctx the parse tree
+	 */
+	void enterTransition(HopperlangParser.TransitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#transition}.
+	 * @param ctx the parse tree
+	 */
+	void exitTransition(HopperlangParser.TransitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#condition_block}.
 	 * @param ctx the parse tree
 	 */
@@ -117,6 +137,16 @@ public interface HopperlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCondition_block(HopperlangParser.Condition_blockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#condition_line}.
+	 * @param ctx the parse tree
+	 */
+	void enterCondition_line(HopperlangParser.Condition_lineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#condition_line}.
+	 * @param ctx the parse tree
+	 */
+	void exitCondition_line(HopperlangParser.Condition_lineContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#condition}.
 	 * @param ctx the parse tree

@@ -1,4 +1,4 @@
-// Generated from C:/Users/juene/IdeaProjects/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
+// Generated from C:/Users/juene/Git/hopperlang/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
 package de.htwb.hopperlang.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -47,6 +47,18 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSignal_declaration(HopperlangParser.Signal_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSignal_modifier(HopperlangParser.Signal_modifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSignal_modifier(HopperlangParser.Signal_modifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -136,6 +148,18 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTransition(HopperlangParser.TransitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTransition(HopperlangParser.TransitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCondition_block(HopperlangParser.Condition_blockContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -143,6 +167,18 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCondition_block(HopperlangParser.Condition_blockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCondition_line(HopperlangParser.Condition_lineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCondition_line(HopperlangParser.Condition_lineContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,5 +1,6 @@
 package de.htwb.hopperlang;
 
+import de.htwb.hopperlang.parser.HopperlangBaseListener;
 import de.htwb.hopperlang.parser.HopperlangLexer;
 import de.htwb.hopperlang.parser.HopperlangParser;
 import org.antlr.runtime.tree.ParseTree;
@@ -15,19 +16,45 @@ public class Main {
 
     public static void main(String[] args) {
 	// write your code here
+        ANTLRInputStream input = null;
         try {
             InputStream example = new FileInputStream("C:\\Users\\juene\\IdeaProjects\\Hopperlang\\example.hl");
-            ANTLRInputStream input = new ANTLRInputStream(example);
+            input = new ANTLRInputStream(example);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(input != null) {
             HopperlangLexer lexer = new HopperlangLexer(input);
 
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             HopperlangParser parser = new HopperlangParser(tokens);
-            HopperlangParser.DocumentContext tree = parser.document(); // begin parsing at rule 'r'
-            System.out.println(tree.toStringTree(parser)); // print LISP-style tree
-        } catch (IOException e) {
-            e.printStackTrace();
+            final NodePool nodes = new NodePool(parser);
+            parser.addParseListener(new HopperlangBaseListener() {
+                @Override
+                public void exitDocument(HopperlangParser.DocumentContext doc) {
+                    for(NodePool.Transition transition: nodes.getTransitions()) {
+                        System.out.println("Transition from: "+transition.src+" to: "+transition.dst);
+                        for(int i = 0; i < transition.conditions.size(); i++) {
+                            HopperlangParser.ConditionContext ctx = transition.conditions.get(i);
+                            String out = ctx.condition().getText();
+                            if(i < transition.conditions.size()-1) {
+                                out += " AND ";
+                            }
+                            System.out.print(out);
+                        }
+                        System.out.println();
+                    }
+                }
+            });
+
+            nodes.fill();
+
+
+
         }
+
 
 
     }

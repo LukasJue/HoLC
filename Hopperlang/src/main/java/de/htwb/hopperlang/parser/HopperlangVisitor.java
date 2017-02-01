@@ -1,4 +1,4 @@
-// Generated from C:/Users/juene/IdeaProjects/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
+// Generated from C:/Users/juene/Git/hopperlang/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
 package de.htwb.hopperlang.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -28,6 +28,12 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSignal_declaration(HopperlangParser.Signal_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#signal_modifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSignal_modifier(HopperlangParser.Signal_modifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#signal_value_list}.
 	 * @param ctx the parse tree
@@ -71,11 +77,23 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitState_body_element(HopperlangParser.State_body_elementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#transition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTransition(HopperlangParser.TransitionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#condition_block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCondition_block(HopperlangParser.Condition_blockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#condition_line}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCondition_line(HopperlangParser.Condition_lineContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#condition}.
 	 * @param ctx the parse tree
