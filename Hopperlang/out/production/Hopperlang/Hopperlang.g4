@@ -1,4 +1,4 @@
-grammar hopperlang;
+grammar Hopperlang;
 WS : [ \r\t]+ -> skip ;
 NEWLINE: [\n];
 NUMBER: [0-9]+;
@@ -23,15 +23,15 @@ NAME : [a-zA-Z][a-zA-Z0-9]* ;
 ASSIGNMENT: '=';
 OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';
-COMMENT: '#'.* -> skip;
+COMMENT: '#'.*? -> skip;
 MULTILINE_COMMENT:  '/*' .*? '*/' -> skip;
 
 document	: signal_declaration automat_block
 		;
 
-empty_lines : NEWLINE
-	    | empty_lines NEWLINE
-	    |
+empty_lines : (NEWLINE+)
+            | (NEWLINE+) empty_lines
+            |
 	    ;
 
 
@@ -51,23 +51,21 @@ signal_value : name type;
 
 automat_block : AUTOMAT name OPEN_BLOCK empty_lines state_block_list CLOSE_BLOCK empty_lines;
 
-state_block_list : state_block empty_lines state_block_list
-				| empty_lines
+state_block_list : (state_block empty_lines)*
 				;
 
 state_block : STATE name OPEN_BLOCK empty_lines state_body CLOSE_BLOCK;
 
-state_body: state_body_element state_body empty_lines
-            | empty_lines;
+state_body: (state_body_element empty_lines)*?
+            ;
 
-state_body_element : condition_block
-	 	           | assignment
-	 	           | empty_lines
+state_body_element : assignment
+	 	           | condition_block
 	 	           ;
 
 condition_block : CONDITION condition TRANSITION name empty_lines condition_block
                  | CONDITION condition TRANSITION name empty_lines
-				 | CONDITION condition OPEN_BLOCK empty_lines condition_block CLOSE_BLOCK empty_lines condition_block
+				 | CONDITION condition OPEN_BLOCK empty_lines condition_block CLOSE_BLOCK
 				 ;
 
 condition : boolean_expression conjunction condition
@@ -87,8 +85,8 @@ assignment : name  ASSIGNMENT NUMBER
 		   | name ASSIGNMENT name
 		   ;
 
-name : NAME { printf("%s", $1); $$ = $1;};
-type : NAME { printf("%s", $1); $$ = $1;};
+name : NAME;
+type : NAME;
 
 
 
