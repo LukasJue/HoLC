@@ -20,7 +20,9 @@ public class NodePool extends HopperlangBaseListener {
 
     private List<HopperlangParser.State_blockContext> states = new ArrayList<>();
 
-    private List<HopperlangCompiler.Transition> transitions = new ArrayList<>();
+    private List<Transition> transitions = new ArrayList<>();
+
+    private String automateName = new String();
 
     private HopperlangParser parser;
     private boolean filled;
@@ -39,7 +41,7 @@ public class NodePool extends HopperlangBaseListener {
         return filled;
     }
 
-    public List<HopperlangCompiler.Transition> getTransitions() {
+    public List<Transition> getTransitions() {
         return transitions;
     }
     public List<HopperlangParser.State_blockContext> getStates() {
@@ -58,9 +60,18 @@ public class NodePool extends HopperlangBaseListener {
         return outputSignals;
     }
 
+    public String getAutomateName() {
+        return automateName;
+    }
+
     @Override
     public void exitDocument(HopperlangParser.DocumentContext doc) {
         filled = true;
+    }
+
+    @Override
+    public void exitAutomat_block(HopperlangParser.Automat_blockContext ctx) {
+        automateName = ctx.name().getText();
     }
 
     @Override
@@ -73,7 +84,7 @@ public class NodePool extends HopperlangBaseListener {
         while(!(parent instanceof HopperlangParser.Signal_declarationContext)) {
             parent = parent.getParent();
         }
-        HopperlangCompiler.SignalType type = HopperlangUtils.getTypeOfDeclartion((HopperlangParser.Signal_declarationContext)parent);
+        HopperlangCompiler.SignalPos type = HopperlangUtils.getTypeOfDeclartion((HopperlangParser.Signal_declarationContext)parent);
         switch (type) {
             case INPUT:
                 System.out.println("Input! "+ctx.name().getText()+" "+ctx.type().getText());
@@ -98,6 +109,40 @@ public class NodePool extends HopperlangBaseListener {
 
     @Override
     public void exitTransition(HopperlangParser.TransitionContext ctx) {
-        transitions.add(new HopperlangCompiler.Transition(ctx));
+        transitions.add(new Transition(ctx));
+    }
+
+    public static class Transition {
+        List<HopperlangParser.ConditionContext> conditions = new ArrayList<>();
+        String src;
+        String dst;
+
+        public Transition(HopperlangParser.TransitionContext ctx) {
+            if(ctx.name() != null) { //only if final end node
+                System.out.println("Transition! "+ctx.getText());
+                ParserRuleContext parent = ctx.getParent();
+                while (parent != null) {
+                    if(parent instanceof HopperlangParser.Transition_blockContext) {
+                        HopperlangParser.ConditionContext condition =((HopperlangParser.Transition_blockContext) parent).condition();
+                        if(condition != null) {
+                            if(condition.parent instanceof HopperlangParser.ConditionContext) {
+                                condition = (HopperlangParser.ConditionContext) condition.parent;
+                            }
+                            conditions.add(0, condition);
+                            System.out.println("Parent Condition! "+condition.getText());
+                        }
+                    } else if(parent instanceof HopperlangParser.State_blockContext) {
+                        src = ((HopperlangParser.State_blockContext)parent).name().getText();
+                    }
+                    parent = parent.getParent();
+                }
+                conditions.add(ctx.condition());
+                dst = ctx.name().getText();
+            }
+        }
+        @Override
+        public String toString() {
+            return src+" -> "+dst;
+        }
     }
 }

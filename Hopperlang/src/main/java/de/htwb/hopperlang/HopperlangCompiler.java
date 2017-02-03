@@ -2,7 +2,6 @@ package de.htwb.hopperlang;
 
 import de.htwb.hopperlang.parser.HopperlangParser;
 import de.htwb.hopperlang.util.HopperlangUtils;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
@@ -13,8 +12,14 @@ import java.util.List;
  */
 public class HopperlangCompiler {
 
+    public static final String CLK_SIGNAL_NAME = "clk";
+    public static final String RESET_SIGNAL_NAME = "reset";
+    public static final String ENABLE_SIGNAL_NAME = "enable";
+
     List<State> states = new ArrayList<>();
     SignalPool signals = new SignalPool();
+    String automateName;
+
 
     public HopperlangCompiler(NodePool pool) {
         if(pool.isFilled()) {
@@ -24,15 +29,21 @@ public class HopperlangCompiler {
 
     private void init(NodePool pool) {
 
+        automateName = pool.getAutomateName();
+
+        signals.addInputSignal(new Signal(SignalPos.INPUT, CLK_SIGNAL_NAME, new Type(SignalType.LOGIC, 1)));
+        signals.addInputSignal(new Signal(SignalPos.INPUT, RESET_SIGNAL_NAME, new Type(SignalType.LOGIC, 1)));
+        signals.addInputSignal(new Signal(SignalPos.INPUT, ENABLE_SIGNAL_NAME, new Type(SignalType.LOGIC, 1)));
+
         for(HopperlangParser.Signal_valueContext ctx : pool.getLocalSignals()) {
-            signals.addLocalSignal(new Signal(SignalType.LOCAL, ctx));
+            signals.addLocalSignal(new Signal(SignalPos.LOCAL, ctx));
         }
 
         for(HopperlangParser.Signal_valueContext ctx : pool.getInputSignals()) {
-            signals.addLocalSignal(new Signal(SignalType.INPUT, ctx));
+            signals.addInputSignal(new Signal(SignalPos.INPUT, ctx));
         }
         for(HopperlangParser.Signal_valueContext ctx : pool.getOutputSignals()) {
-            signals.addLocalSignal(new Signal(SignalType.OUTPUT, ctx));
+            signals.addOutputSignal(new Signal(SignalPos.OUTPUT, ctx));
         }
 
         for(HopperlangParser.State_blockContext state : pool.getStates()) {
@@ -44,6 +55,7 @@ public class HopperlangCompiler {
 
         for(State state: states) {
             for (Transition transition : state.transitions) {
+                System.out.println("Condition for "+transition.toString()+" is "+transition.condition);
                 if(!HopperlangUtils.containsState(states, transition.dst)) {
                     System.out.println("Transition destination doesn't exist! "+transition.toString());
                     return false;
@@ -77,14 +89,44 @@ public class HopperlangCompiler {
     }
 
     public class Signal {
-        SignalType modifier;
+        SignalPos modifier;
         String name;
-        String type;
+        Type type;
 
-        public Signal(SignalType type, HopperlangParser.Signal_valueContext ctx) {
+        public Signal(SignalPos type, HopperlangParser.Signal_valueContext ctx) {
             modifier = type;
             name = ctx.name().getText();
-            this.type = ctx.type().getText();
+            this.type = new Type(ctx.type());
+        }
+
+        private Signal(SignalPos mod, String name, Type type) {
+            modifier = mod;
+            this.name = name;
+            this.type = type;
+        }
+    }
+
+    public class Type {
+        int width = 1;
+        SignalType signalType;
+        public Type(HopperlangParser.TypeContext ctx) {
+            if(ctx.getText().equals("hilo") || ctx.getText().equals("bit")) {
+                width = 1;
+                signalType = SignalType.LOGIC;
+            } else {
+                if(ctx.getText().startsWith("int")) {
+                    width = Integer.parseInt(ctx.getText().replace("int", ""));
+                    signalType = SignalType.INT;
+                } else {
+                    width = Integer.parseInt(ctx.getText().replace("bus", ""));
+                    signalType = SignalType.VECTOR;
+                }
+            }
+        }
+
+        private Type(SignalType type, int width) {
+            signalType = type;
+            this.width = width;
         }
     }
 
@@ -107,9 +149,9 @@ public class HopperlangCompiler {
                 }
             }
 
-            for(Transition transition : pool.getTransitions()) {
+            for(NodePool.Transition transition : pool.getTransitions()) {
                 if(transition.src.equals(name)) {
-                    transitions.add(transition);
+                    transitions.add(new Transition(transition));
                 }
             }
             pool.getTransitions().removeAll(transitions);
@@ -129,33 +171,51 @@ public class HopperlangCompiler {
     }
 
     public static class Transition {
-        List<HopperlangParser.ConditionContext> conditions = new ArrayList<>();
+
         String src;
         String dst;
+        String condition;
 
-        public Transition(HopperlangParser.TransitionContext ctx) {
-            if(ctx.name() != null) { //only if final end node
-                System.out.println("Transition! "+ctx.getText());
-                ParserRuleContext parent = ctx.getParent();
-                while (parent != null) {
-                    if(parent instanceof HopperlangParser.Transition_blockContext) {
-                        HopperlangParser.ConditionContext condition =((HopperlangParser.Transition_blockContext) parent).condition();
-                        if(condition != null) {
-                            if(condition.parent instanceof HopperlangParser.ConditionContext) {
-                                condition = (HopperlangParser.ConditionContext) condition.parent;
-                            }
-                            conditions.add(condition);
-                            System.out.println("Parent Condition! "+condition.getText());
-                        }
-                    } else if(parent instanceof HopperlangParser.State_blockContext) {
-                        src = ((HopperlangParser.State_blockContext)parent).name().getText();
-                    }
-                    parent = parent.getParent();
+        public Transition(NodePool.Transition transition) {
+            this.src = transition.src;
+            this.dst = transition.dst;
+            condition = new String();
+            for(int i = 0; i < transition.conditions.size(); i++) {
+                HopperlangParser.ConditionContext ctx = transition.conditions.get(i);
+                creatCondition(ctx);
+                if(i < transition.conditions.size() -1) {
+                    condition += " AND ";
                 }
-                conditions.add(ctx.condition());
-                dst = ctx.name().getText();
             }
         }
+
+        private void creatCondition(HopperlangParser.ConditionContext ctx) {
+            if(ctx.getChildCount() > 1) {
+                //Expression with conjunction
+                condition += ("(");
+            }
+            for(int j = 0; j < ctx.getChildCount(); j++) {
+                ParseTree child = ctx.getChild(j);
+                if(child instanceof HopperlangParser.Boolean_expressionContext) {
+                    HopperlangParser.Boolean_expressionContext expr = (HopperlangParser.Boolean_expressionContext)child;
+                    while(expr.getChildCount() == 2) {
+                        condition += " NOT";
+                        expr = expr.boolean_expression();
+                    }
+                    condition += expr.getText().replace("(", " ").replace(")", " ");
+                } else if(child instanceof HopperlangParser.ConjunctionContext) {
+                    condition += child.getText().toUpperCase();
+                } else if (child instanceof HopperlangParser.ConditionContext) {
+                    creatCondition((HopperlangParser.ConditionContext)child);
+                }
+
+            }
+            if(ctx.getChildCount() > 1) {
+                //Expression with conjunction
+                condition += (") ");
+            }
+        }
+
         @Override
         public String toString() {
             return src+" -> "+dst;
@@ -182,7 +242,7 @@ public class HopperlangCompiler {
         private List<Signal> inputSignals = new ArrayList<>();
         private List<Signal> outputSignals = new ArrayList<>();
 
-        void addSignal(SignalType type, Signal signal) {
+        void addSignal(SignalPos type, Signal signal) {
             switch (type) {
                 case LOCAL:
                     addLocalSignal(signal);
@@ -240,9 +300,15 @@ public class HopperlangCompiler {
         }
     }
 
-    public enum SignalType {
+    public enum SignalPos {
         INPUT,
         OUTPUT,
         LOCAL
+    }
+
+    public enum SignalType {
+        INT,
+        LOGIC,
+        VECTOR
     }
 }

@@ -19,10 +19,16 @@ AND: 'and';
 OR: 'or';
 XOR: 'xor';
 
-NAME : [a-zA-Z][a-zA-Z0-9]* ;
 ASSIGNMENT: '=';
 OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';
+
+BIT : 'bit';
+BUS : 'bus'[0-9]+;
+HILO: 'hilo';
+INT : 'int'[0-9]+;
+
+NAME : [a-zA-Z][a-zA-Z0-9]* ;
 COMMENT: '#'.*? -> skip;
 MULTILINE_COMMENT:  '/*' .*? '*/' -> skip;
 
@@ -96,7 +102,10 @@ assignment_right: name
                 | NUMBER
                 ;
 name : NAME;
-type : NAME;
+type : BIT
+      | BUS
+      | HILO
+      | INT;
 
 
 

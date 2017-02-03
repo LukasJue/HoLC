@@ -8,10 +8,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class Main {
 
@@ -46,11 +43,14 @@ public class Main {
             }
             System.out.println("Phase 4: Generating vhdl");
             //Phase 4
+            VHDLDocument document = new VHDLDocument(compiler);
             System.out.println("Phase 5: Generating file");
             //Phase 5
-
-
-
+            try (PrintStream out = new PrintStream(new FileOutputStream("example.vhd"))) {
+                out.print(document.getContent());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
 

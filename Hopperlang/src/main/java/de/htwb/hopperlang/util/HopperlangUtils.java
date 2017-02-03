@@ -2,7 +2,7 @@ package de.htwb.hopperlang.util;
 
 import com.sun.corba.se.impl.io.TypeMismatchException;
 import de.htwb.hopperlang.HopperlangCompiler;
-import de.htwb.hopperlang.HopperlangCompiler.SignalType;
+import de.htwb.hopperlang.HopperlangCompiler.SignalPos;
 import de.htwb.hopperlang.parser.HopperlangParser;
 
 import java.util.List;
@@ -15,14 +15,14 @@ public final class HopperlangUtils {
     private HopperlangUtils() {}
 
 
-    public static final SignalType getTypeOfDeclartion(HopperlangParser.Signal_declarationContext ctx) {
+    public static final SignalPos getTypeOfDeclartion(HopperlangParser.Signal_declarationContext ctx) {
         switch(ctx.signal_modifier().getText()) {
             case "input":
-                return SignalType.INPUT;
+                return SignalPos.INPUT;
             case "output":
-                return SignalType.OUTPUT;
+                return SignalPos.OUTPUT;
             case "local":
-                return SignalType.LOCAL;
+                return SignalPos.LOCAL;
             default:
                 throw new TypeMismatchException("This declaration context has no type! "+ctx.toString());
         }
