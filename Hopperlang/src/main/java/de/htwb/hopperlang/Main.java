@@ -31,9 +31,23 @@ public class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             HopperlangParser parser = new HopperlangParser(tokens);
+            System.out.println("Phase 1: Context aggregation");
             final NodePool nodes = new NodePool(parser);
-
             nodes.fill();
+            System.out.println("Phase 2: Creating formal structures");
+            final HopperlangCompiler compiler = new HopperlangCompiler(nodes);
+            System.out.println("Phase 3: Basic checking");
+            boolean check = compiler.check();
+            if(check) {
+                System.out.println("Checking passed!");
+            } else {
+                System.out.println("Checking failed!");
+                System.exit(1);
+            }
+            System.out.println("Phase 4: Generating vhdl");
+            //Phase 4
+            System.out.println("Phase 5: Generating file");
+            //Phase 5
 
 
 

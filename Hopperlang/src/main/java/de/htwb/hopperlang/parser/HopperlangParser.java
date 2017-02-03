@@ -28,13 +28,14 @@ public class HopperlangParser extends Parser {
 		RULE_state_body = 9, RULE_state_body_element = 10, RULE_condition_block = 11, 
 		RULE_transition_block = 12, RULE_transition = 13, RULE_condition = 14, 
 		RULE_conjunction = 15, RULE_boolean_expression = 16, RULE_assignment = 17, 
-		RULE_name = 18, RULE_type = 19;
+		RULE_assignment_left = 18, RULE_assignment_right = 19, RULE_name = 20, 
+		RULE_type = 21;
 	public static final String[] ruleNames = {
 		"document", "empty_lines", "signal_declaration", "signal_modifier", "signal_value_list", 
 		"signal_value", "automat_block", "state_block_list", "state_block", "state_body", 
 		"state_body_element", "condition_block", "transition_block", "transition", 
-		"condition", "conjunction", "boolean_expression", "assignment", "name", 
-		"type"
+		"condition", "conjunction", "boolean_expression", "assignment", "assignment_left", 
+		"assignment_right", "name", "type"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -130,11 +131,11 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(40);
+			setState(44);
 			signal_declaration();
-			setState(41);
+			setState(45);
 			automat_block();
-			setState(42);
+			setState(46);
 			match(EOF);
 			}
 		}
@@ -177,15 +178,15 @@ public class HopperlangParser extends Parser {
 		Empty_linesContext _localctx = new Empty_linesContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_empty_lines);
 		try {
-			setState(47);
+			setState(51);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(44);
+				setState(48);
 				match(NEWLINE);
-				setState(45);
+				setState(49);
 				empty_lines();
 				}
 				break;
@@ -252,42 +253,42 @@ public class HopperlangParser extends Parser {
 		Signal_declarationContext _localctx = new Signal_declarationContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_signal_declaration);
 		try {
-			setState(65);
+			setState(69);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(49);
-				match(SIGNAL);
-				setState(50);
-				signal_modifier();
-				setState(51);
-				signal_value();
-				setState(52);
-				empty_lines();
 				setState(53);
+				match(SIGNAL);
+				setState(54);
+				signal_modifier();
+				setState(55);
+				signal_value();
+				setState(56);
+				empty_lines();
+				setState(57);
 				signal_declaration();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(55);
-				match(SIGNAL);
-				setState(56);
-				signal_modifier();
-				setState(57);
-				match(OPEN_BRACKET);
-				setState(58);
-				empty_lines();
 				setState(59);
-				signal_value_list(0);
+				match(SIGNAL);
 				setState(60);
-				match(CLOSE_BRACKET);
+				signal_modifier();
 				setState(61);
-				empty_lines();
+				match(OPEN_BRACKET);
 				setState(62);
+				empty_lines();
+				setState(63);
+				signal_value_list(0);
+				setState(64);
+				match(CLOSE_BRACKET);
+				setState(65);
+				empty_lines();
+				setState(66);
 				signal_declaration();
 				}
 				break;
@@ -339,7 +340,7 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(67);
+			setState(71);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SIG_INPUT) | (1L << SIG_OUTPUT) | (1L << SIG_LOCAL))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -407,13 +408,13 @@ public class HopperlangParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(70);
+			setState(74);
 			signal_value();
-			setState(71);
+			setState(75);
 			empty_lines();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(79);
+			setState(83);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -424,16 +425,16 @@ public class HopperlangParser extends Parser {
 					{
 					_localctx = new Signal_value_listContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_signal_value_list);
-					setState(73);
+					setState(77);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(74);
+					setState(78);
 					signal_value();
-					setState(75);
+					setState(79);
 					empty_lines();
 					}
 					} 
 				}
-				setState(81);
+				setState(85);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			}
@@ -482,9 +483,9 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(82);
+			setState(86);
 			name();
-			setState(83);
+			setState(87);
 			type();
 			}
 		}
@@ -540,19 +541,19 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(85);
-			match(AUTOMAT);
-			setState(86);
-			name();
-			setState(87);
-			match(OPEN_BLOCK);
-			setState(88);
-			empty_lines();
 			setState(89);
-			state_block_list();
+			match(AUTOMAT);
 			setState(90);
-			match(CLOSE_BLOCK);
+			name();
 			setState(91);
+			match(OPEN_BLOCK);
+			setState(92);
+			empty_lines();
+			setState(93);
+			state_block_list();
+			setState(94);
+			match(CLOSE_BLOCK);
+			setState(95);
 			empty_lines();
 			}
 		}
@@ -606,21 +607,21 @@ public class HopperlangParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(98);
+			setState(102);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=1 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1+1 ) {
 					{
 					{
-					setState(93);
+					setState(97);
 					state_block();
-					setState(94);
+					setState(98);
 					empty_lines();
 					}
 					} 
 				}
-				setState(100);
+				setState(104);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
@@ -675,17 +676,17 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(101);
-			match(STATE);
-			setState(102);
-			name();
-			setState(103);
-			match(OPEN_BLOCK);
-			setState(104);
-			empty_lines();
 			setState(105);
-			state_body();
+			match(STATE);
 			setState(106);
+			name();
+			setState(107);
+			match(OPEN_BLOCK);
+			setState(108);
+			empty_lines();
+			setState(109);
+			state_body();
+			setState(110);
 			match(CLOSE_BLOCK);
 			}
 		}
@@ -739,19 +740,19 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(113);
+			setState(117);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==CONDITION || _la==NAME) {
 				{
 				{
-				setState(108);
+				setState(112);
 				state_body_element();
-				setState(109);
+				setState(113);
 				empty_lines();
 				}
 				}
-				setState(115);
+				setState(119);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -798,20 +799,20 @@ public class HopperlangParser extends Parser {
 		State_body_elementContext _localctx = new State_body_elementContext(_ctx, getState());
 		enterRule(_localctx, 20, RULE_state_body_element);
 		try {
-			setState(118);
+			setState(122);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CONDITION:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(116);
+				setState(120);
 				condition_block();
 				}
 				break;
 			case NAME:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(117);
+				setState(121);
 				assignment();
 				}
 				break;
@@ -863,36 +864,36 @@ public class HopperlangParser extends Parser {
 		Condition_blockContext _localctx = new Condition_blockContext(_ctx, getState());
 		enterRule(_localctx, 22, RULE_condition_block);
 		try {
-			setState(128);
+			setState(132);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(120);
+				setState(124);
 				transition();
-				setState(121);
+				setState(125);
 				condition_block();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(123);
+				setState(127);
 				transition();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(124);
+				setState(128);
 				transition_block();
-				setState(126);
+				setState(130);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 				case 1:
 					{
-					setState(125);
+					setState(129);
 					condition_block();
 					}
 					break;
@@ -953,19 +954,19 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(130);
-			match(CONDITION);
-			setState(131);
-			condition();
-			setState(132);
-			match(OPEN_BLOCK);
-			setState(133);
-			empty_lines();
 			setState(134);
-			condition_block();
+			match(CONDITION);
 			setState(135);
-			match(CLOSE_BLOCK);
+			condition();
 			setState(136);
+			match(OPEN_BLOCK);
+			setState(137);
+			empty_lines();
+			setState(138);
+			condition_block();
+			setState(139);
+			match(CLOSE_BLOCK);
+			setState(140);
 			empty_lines();
 			}
 		}
@@ -1017,15 +1018,15 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(138);
-			match(CONDITION);
-			setState(139);
-			condition();
-			setState(140);
-			match(TRANSITION);
-			setState(141);
-			name();
 			setState(142);
+			match(CONDITION);
+			setState(143);
+			condition();
+			setState(144);
+			match(TRANSITION);
+			setState(145);
+			name();
+			setState(146);
 			empty_lines();
 			}
 		}
@@ -1073,24 +1074,24 @@ public class HopperlangParser extends Parser {
 		ConditionContext _localctx = new ConditionContext(_ctx, getState());
 		enterRule(_localctx, 28, RULE_condition);
 		try {
-			setState(149);
+			setState(153);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(144);
+				setState(148);
 				boolean_expression();
-				setState(145);
+				setState(149);
 				conjunction();
-				setState(146);
+				setState(150);
 				condition();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(148);
+				setState(152);
 				boolean_expression();
 				}
 				break;
@@ -1137,7 +1138,7 @@ public class HopperlangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(151);
+			setState(155);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AND) | (1L << OR) | (1L << XOR))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -1193,26 +1194,26 @@ public class HopperlangParser extends Parser {
 		Boolean_expressionContext _localctx = new Boolean_expressionContext(_ctx, getState());
 		enterRule(_localctx, 32, RULE_boolean_expression);
 		try {
-			setState(159);
+			setState(163);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NEGATION:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(153);
+				setState(157);
 				match(NEGATION);
-				setState(154);
+				setState(158);
 				boolean_expression();
 				}
 				break;
 			case OPEN_BRACKET:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(155);
+				setState(159);
 				match(OPEN_BRACKET);
-				setState(156);
+				setState(160);
 				assignment();
-				setState(157);
+				setState(161);
 				match(CLOSE_BRACKET);
 				}
 				break;
@@ -1232,14 +1233,13 @@ public class HopperlangParser extends Parser {
 	}
 
 	public static class AssignmentContext extends ParserRuleContext {
-		public List<NameContext> name() {
-			return getRuleContexts(NameContext.class);
-		}
-		public NameContext name(int i) {
-			return getRuleContext(NameContext.class,i);
+		public Assignment_leftContext assignment_left() {
+			return getRuleContext(Assignment_leftContext.class,0);
 		}
 		public TerminalNode ASSIGNMENT() { return getToken(HopperlangParser.ASSIGNMENT, 0); }
-		public TerminalNode NUMBER() { return getToken(HopperlangParser.NUMBER, 0); }
+		public Assignment_rightContext assignment_right() {
+			return getRuleContext(Assignment_rightContext.class,0);
+		}
 		public AssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1263,31 +1263,118 @@ public class HopperlangParser extends Parser {
 		AssignmentContext _localctx = new AssignmentContext(_ctx, getState());
 		enterRule(_localctx, 34, RULE_assignment);
 		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(165);
+			assignment_left();
+			setState(166);
+			match(ASSIGNMENT);
+			setState(167);
+			assignment_right();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Assignment_leftContext extends ParserRuleContext {
+		public NameContext name() {
+			return getRuleContext(NameContext.class,0);
+		}
+		public Assignment_leftContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_assignment_left; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HopperlangListener ) ((HopperlangListener)listener).enterAssignment_left(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HopperlangListener ) ((HopperlangListener)listener).exitAssignment_left(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HopperlangVisitor ) return ((HopperlangVisitor<? extends T>)visitor).visitAssignment_left(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Assignment_leftContext assignment_left() throws RecognitionException {
+		Assignment_leftContext _localctx = new Assignment_leftContext(_ctx, getState());
+		enterRule(_localctx, 36, RULE_assignment_left);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
 			setState(169);
+			name();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Assignment_rightContext extends ParserRuleContext {
+		public NameContext name() {
+			return getRuleContext(NameContext.class,0);
+		}
+		public TerminalNode NUMBER() { return getToken(HopperlangParser.NUMBER, 0); }
+		public Assignment_rightContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_assignment_right; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HopperlangListener ) ((HopperlangListener)listener).enterAssignment_right(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HopperlangListener ) ((HopperlangListener)listener).exitAssignment_right(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HopperlangVisitor ) return ((HopperlangVisitor<? extends T>)visitor).visitAssignment_right(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Assignment_rightContext assignment_right() throws RecognitionException {
+		Assignment_rightContext _localctx = new Assignment_rightContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_assignment_right);
+		try {
+			setState(173);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case NAME:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(161);
+				setState(171);
 				name();
-				setState(162);
-				match(ASSIGNMENT);
-				setState(163);
+				}
+				break;
+			case NUMBER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(172);
 				match(NUMBER);
 				}
 				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(165);
-				name();
-				setState(166);
-				match(ASSIGNMENT);
-				setState(167);
-				name();
-				}
-				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1324,11 +1411,11 @@ public class HopperlangParser extends Parser {
 
 	public final NameContext name() throws RecognitionException {
 		NameContext _localctx = new NameContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_name);
+		enterRule(_localctx, 40, RULE_name);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(171);
+			setState(175);
 			match(NAME);
 			}
 		}
@@ -1366,11 +1453,11 @@ public class HopperlangParser extends Parser {
 
 	public final TypeContext type() throws RecognitionException {
 		TypeContext _localctx = new TypeContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_type);
+		enterRule(_localctx, 42, RULE_type);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(173);
+			setState(177);
 			match(NAME);
 			}
 		}
@@ -1401,55 +1488,56 @@ public class HopperlangParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\31\u00b2\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\31\u00b6\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
-		"\4\23\t\23\4\24\t\24\4\25\t\25\3\2\3\2\3\2\3\2\3\3\3\3\3\3\5\3\62\n\3"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4D"+
-		"\n\4\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6P\n\6\f\6\16\6S\13\6\3"+
-		"\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\7\tc\n\t\f\t\16"+
-		"\tf\13\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\13\3\13\3\13\7\13r\n\13\f\13\16"+
-		"\13u\13\13\3\f\3\f\5\fy\n\f\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u0081\n\r\5\r"+
-		"\u0083\n\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3\17"+
-		"\3\17\3\17\3\20\3\20\3\20\3\20\3\20\5\20\u0098\n\20\3\21\3\21\3\22\3\22"+
-		"\3\22\3\22\3\22\3\22\5\22\u00a2\n\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23"+
-		"\3\23\5\23\u00ac\n\23\3\24\3\24\3\25\3\25\3\25\3d\3\n\26\2\4\6\b\n\f\16"+
-		"\20\22\24\26\30\32\34\36 \"$&(\2\4\3\2\t\13\3\2\21\23\u00aa\2*\3\2\2\2"+
-		"\4\61\3\2\2\2\6C\3\2\2\2\bE\3\2\2\2\nG\3\2\2\2\fT\3\2\2\2\16W\3\2\2\2"+
-		"\20d\3\2\2\2\22g\3\2\2\2\24s\3\2\2\2\26x\3\2\2\2\30\u0082\3\2\2\2\32\u0084"+
-		"\3\2\2\2\34\u008c\3\2\2\2\36\u0097\3\2\2\2 \u0099\3\2\2\2\"\u00a1\3\2"+
-		"\2\2$\u00ab\3\2\2\2&\u00ad\3\2\2\2(\u00af\3\2\2\2*+\5\6\4\2+,\5\16\b\2"+
-		",-\7\2\2\3-\3\3\2\2\2./\7\4\2\2/\62\5\4\3\2\60\62\3\2\2\2\61.\3\2\2\2"+
-		"\61\60\3\2\2\2\62\5\3\2\2\2\63\64\7\b\2\2\64\65\5\b\5\2\65\66\5\f\7\2"+
-		"\66\67\5\4\3\2\678\5\6\4\28D\3\2\2\29:\7\b\2\2:;\5\b\5\2;<\7\26\2\2<="+
-		"\5\4\3\2=>\5\n\6\2>?\7\27\2\2?@\5\4\3\2@A\5\6\4\2AD\3\2\2\2BD\3\2\2\2"+
-		"C\63\3\2\2\2C9\3\2\2\2CB\3\2\2\2D\7\3\2\2\2EF\t\2\2\2F\t\3\2\2\2GH\b\6"+
-		"\1\2HI\5\f\7\2IJ\5\4\3\2JQ\3\2\2\2KL\f\4\2\2LM\5\f\7\2MN\5\4\3\2NP\3\2"+
-		"\2\2OK\3\2\2\2PS\3\2\2\2QO\3\2\2\2QR\3\2\2\2R\13\3\2\2\2SQ\3\2\2\2TU\5"+
-		"&\24\2UV\5(\25\2V\r\3\2\2\2WX\7\f\2\2XY\5&\24\2YZ\7\6\2\2Z[\5\4\3\2[\\"+
-		"\5\20\t\2\\]\7\7\2\2]^\5\4\3\2^\17\3\2\2\2_`\5\22\n\2`a\5\4\3\2ac\3\2"+
-		"\2\2b_\3\2\2\2cf\3\2\2\2de\3\2\2\2db\3\2\2\2e\21\3\2\2\2fd\3\2\2\2gh\7"+
-		"\r\2\2hi\5&\24\2ij\7\6\2\2jk\5\4\3\2kl\5\24\13\2lm\7\7\2\2m\23\3\2\2\2"+
-		"no\5\26\f\2op\5\4\3\2pr\3\2\2\2qn\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2"+
-		"\2t\25\3\2\2\2us\3\2\2\2vy\5\30\r\2wy\5$\23\2xv\3\2\2\2xw\3\2\2\2y\27"+
-		"\3\2\2\2z{\5\34\17\2{|\5\30\r\2|\u0083\3\2\2\2}\u0083\5\34\17\2~\u0080"+
-		"\5\32\16\2\177\u0081\5\30\r\2\u0080\177\3\2\2\2\u0080\u0081\3\2\2\2\u0081"+
-		"\u0083\3\2\2\2\u0082z\3\2\2\2\u0082}\3\2\2\2\u0082~\3\2\2\2\u0083\31\3"+
-		"\2\2\2\u0084\u0085\7\16\2\2\u0085\u0086\5\36\20\2\u0086\u0087\7\6\2\2"+
-		"\u0087\u0088\5\4\3\2\u0088\u0089\5\30\r\2\u0089\u008a\7\7\2\2\u008a\u008b"+
-		"\5\4\3\2\u008b\33\3\2\2\2\u008c\u008d\7\16\2\2\u008d\u008e\5\36\20\2\u008e"+
-		"\u008f\7\20\2\2\u008f\u0090\5&\24\2\u0090\u0091\5\4\3\2\u0091\35\3\2\2"+
-		"\2\u0092\u0093\5\"\22\2\u0093\u0094\5 \21\2\u0094\u0095\5\36\20\2\u0095"+
-		"\u0098\3\2\2\2\u0096\u0098\5\"\22\2\u0097\u0092\3\2\2\2\u0097\u0096\3"+
-		"\2\2\2\u0098\37\3\2\2\2\u0099\u009a\t\3\2\2\u009a!\3\2\2\2\u009b\u009c"+
-		"\7\17\2\2\u009c\u00a2\5\"\22\2\u009d\u009e\7\26\2\2\u009e\u009f\5$\23"+
-		"\2\u009f\u00a0\7\27\2\2\u00a0\u00a2\3\2\2\2\u00a1\u009b\3\2\2\2\u00a1"+
-		"\u009d\3\2\2\2\u00a2#\3\2\2\2\u00a3\u00a4\5&\24\2\u00a4\u00a5\7\25\2\2"+
-		"\u00a5\u00a6\7\5\2\2\u00a6\u00ac\3\2\2\2\u00a7\u00a8\5&\24\2\u00a8\u00a9"+
-		"\7\25\2\2\u00a9\u00aa\5&\24\2\u00aa\u00ac\3\2\2\2\u00ab\u00a3\3\2\2\2"+
-		"\u00ab\u00a7\3\2\2\2\u00ac%\3\2\2\2\u00ad\u00ae\7\24\2\2\u00ae\'\3\2\2"+
-		"\2\u00af\u00b0\7\24\2\2\u00b0)\3\2\2\2\r\61CQdsx\u0080\u0082\u0097\u00a1"+
-		"\u00ab";
+		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\3\2\3\2\3\2\3\2\3\3"+
+		"\3\3\3\3\5\3\66\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
+		"\4\3\4\3\4\3\4\5\4H\n\4\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6T\n"+
+		"\6\f\6\16\6W\13\6\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t"+
+		"\3\t\7\tg\n\t\f\t\16\tj\13\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\13\3\13\3\13"+
+		"\7\13v\n\13\f\13\16\13y\13\13\3\f\3\f\5\f}\n\f\3\r\3\r\3\r\3\r\3\r\3\r"+
+		"\5\r\u0085\n\r\5\r\u0087\n\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3"+
+		"\17\3\17\3\17\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3\20\5\20\u009c\n\20"+
+		"\3\21\3\21\3\22\3\22\3\22\3\22\3\22\3\22\5\22\u00a6\n\22\3\23\3\23\3\23"+
+		"\3\23\3\24\3\24\3\25\3\25\5\25\u00b0\n\25\3\26\3\26\3\27\3\27\3\27\3h"+
+		"\3\n\30\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,\2\4\3\2\t\13\3"+
+		"\2\21\23\u00ac\2.\3\2\2\2\4\65\3\2\2\2\6G\3\2\2\2\bI\3\2\2\2\nK\3\2\2"+
+		"\2\fX\3\2\2\2\16[\3\2\2\2\20h\3\2\2\2\22k\3\2\2\2\24w\3\2\2\2\26|\3\2"+
+		"\2\2\30\u0086\3\2\2\2\32\u0088\3\2\2\2\34\u0090\3\2\2\2\36\u009b\3\2\2"+
+		"\2 \u009d\3\2\2\2\"\u00a5\3\2\2\2$\u00a7\3\2\2\2&\u00ab\3\2\2\2(\u00af"+
+		"\3\2\2\2*\u00b1\3\2\2\2,\u00b3\3\2\2\2./\5\6\4\2/\60\5\16\b\2\60\61\7"+
+		"\2\2\3\61\3\3\2\2\2\62\63\7\4\2\2\63\66\5\4\3\2\64\66\3\2\2\2\65\62\3"+
+		"\2\2\2\65\64\3\2\2\2\66\5\3\2\2\2\678\7\b\2\289\5\b\5\29:\5\f\7\2:;\5"+
+		"\4\3\2;<\5\6\4\2<H\3\2\2\2=>\7\b\2\2>?\5\b\5\2?@\7\26\2\2@A\5\4\3\2AB"+
+		"\5\n\6\2BC\7\27\2\2CD\5\4\3\2DE\5\6\4\2EH\3\2\2\2FH\3\2\2\2G\67\3\2\2"+
+		"\2G=\3\2\2\2GF\3\2\2\2H\7\3\2\2\2IJ\t\2\2\2J\t\3\2\2\2KL\b\6\1\2LM\5\f"+
+		"\7\2MN\5\4\3\2NU\3\2\2\2OP\f\4\2\2PQ\5\f\7\2QR\5\4\3\2RT\3\2\2\2SO\3\2"+
+		"\2\2TW\3\2\2\2US\3\2\2\2UV\3\2\2\2V\13\3\2\2\2WU\3\2\2\2XY\5*\26\2YZ\5"+
+		",\27\2Z\r\3\2\2\2[\\\7\f\2\2\\]\5*\26\2]^\7\6\2\2^_\5\4\3\2_`\5\20\t\2"+
+		"`a\7\7\2\2ab\5\4\3\2b\17\3\2\2\2cd\5\22\n\2de\5\4\3\2eg\3\2\2\2fc\3\2"+
+		"\2\2gj\3\2\2\2hi\3\2\2\2hf\3\2\2\2i\21\3\2\2\2jh\3\2\2\2kl\7\r\2\2lm\5"+
+		"*\26\2mn\7\6\2\2no\5\4\3\2op\5\24\13\2pq\7\7\2\2q\23\3\2\2\2rs\5\26\f"+
+		"\2st\5\4\3\2tv\3\2\2\2ur\3\2\2\2vy\3\2\2\2wu\3\2\2\2wx\3\2\2\2x\25\3\2"+
+		"\2\2yw\3\2\2\2z}\5\30\r\2{}\5$\23\2|z\3\2\2\2|{\3\2\2\2}\27\3\2\2\2~\177"+
+		"\5\34\17\2\177\u0080\5\30\r\2\u0080\u0087\3\2\2\2\u0081\u0087\5\34\17"+
+		"\2\u0082\u0084\5\32\16\2\u0083\u0085\5\30\r\2\u0084\u0083\3\2\2\2\u0084"+
+		"\u0085\3\2\2\2\u0085\u0087\3\2\2\2\u0086~\3\2\2\2\u0086\u0081\3\2\2\2"+
+		"\u0086\u0082\3\2\2\2\u0087\31\3\2\2\2\u0088\u0089\7\16\2\2\u0089\u008a"+
+		"\5\36\20\2\u008a\u008b\7\6\2\2\u008b\u008c\5\4\3\2\u008c\u008d\5\30\r"+
+		"\2\u008d\u008e\7\7\2\2\u008e\u008f\5\4\3\2\u008f\33\3\2\2\2\u0090\u0091"+
+		"\7\16\2\2\u0091\u0092\5\36\20\2\u0092\u0093\7\20\2\2\u0093\u0094\5*\26"+
+		"\2\u0094\u0095\5\4\3\2\u0095\35\3\2\2\2\u0096\u0097\5\"\22\2\u0097\u0098"+
+		"\5 \21\2\u0098\u0099\5\36\20\2\u0099\u009c\3\2\2\2\u009a\u009c\5\"\22"+
+		"\2\u009b\u0096\3\2\2\2\u009b\u009a\3\2\2\2\u009c\37\3\2\2\2\u009d\u009e"+
+		"\t\3\2\2\u009e!\3\2\2\2\u009f\u00a0\7\17\2\2\u00a0\u00a6\5\"\22\2\u00a1"+
+		"\u00a2\7\26\2\2\u00a2\u00a3\5$\23\2\u00a3\u00a4\7\27\2\2\u00a4\u00a6\3"+
+		"\2\2\2\u00a5\u009f\3\2\2\2\u00a5\u00a1\3\2\2\2\u00a6#\3\2\2\2\u00a7\u00a8"+
+		"\5&\24\2\u00a8\u00a9\7\25\2\2\u00a9\u00aa\5(\25\2\u00aa%\3\2\2\2\u00ab"+
+		"\u00ac\5*\26\2\u00ac\'\3\2\2\2\u00ad\u00b0\5*\26\2\u00ae\u00b0\7\5\2\2"+
+		"\u00af\u00ad\3\2\2\2\u00af\u00ae\3\2\2\2\u00b0)\3\2\2\2\u00b1\u00b2\7"+
+		"\24\2\2\u00b2+\3\2\2\2\u00b3\u00b4\7\24\2\2\u00b4-\3\2\2\2\r\65GUhw|\u0084"+
+		"\u0086\u009b\u00a5\u00af";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -119,6 +119,18 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(HopperlangParser.AssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#assignment_left}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignment_left(HopperlangParser.Assignment_leftContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#assignment_right}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignment_right(HopperlangParser.Assignment_rightContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#name}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -188,6 +188,26 @@ public interface HopperlangListener extends ParseTreeListener {
 	 */
 	void exitAssignment(HopperlangParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#assignment_left}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignment_left(HopperlangParser.Assignment_leftContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#assignment_left}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignment_left(HopperlangParser.Assignment_leftContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#assignment_right}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignment_right(HopperlangParser.Assignment_rightContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#assignment_right}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignment_right(HopperlangParser.Assignment_rightContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#name}.
 	 * @param ctx the parse tree
 	 */

@@ -29,7 +29,7 @@ MULTILINE_COMMENT:  '/*' .*? '*/' -> skip;
 document	: signal_declaration automat_block EOF;
 
 empty_lines : NEWLINE empty_lines
-|
+            |
 	         ;
 
 
@@ -87,10 +87,14 @@ boolean_expression : NEGATION   boolean_expression
 		   | OPEN_BRACKET assignment CLOSE_BRACKET
 		   ;
 
-assignment : name  ASSIGNMENT NUMBER
-		   | name ASSIGNMENT name
+assignment : assignment_left  ASSIGNMENT assignment_right
 		   ;
 
+assignment_left: name
+                ;
+assignment_right: name
+                | NUMBER
+                ;
 name : NAME;
 type : NAME;
 
