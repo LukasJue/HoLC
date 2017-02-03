@@ -31,9 +31,11 @@ automat example do
     end
 
     state s3 do
-        when (x=1) do
+        when not (x=1) do
+            when not (y=0) do
+                when (y=1) or (y=2) goto s1
+            end
             when (y=4)     goto s0
-            when not (y=0) goto s1
         end
 
         x=1

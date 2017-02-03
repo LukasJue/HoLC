@@ -77,23 +77,23 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitState_body_element(HopperlangParser.State_body_elementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link HopperlangParser#transition}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransition(HopperlangParser.TransitionContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#condition_block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCondition_block(HopperlangParser.Condition_blockContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link HopperlangParser#condition_line}.
+	 * Visit a parse tree produced by {@link HopperlangParser#transition_block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCondition_line(HopperlangParser.Condition_lineContext ctx);
+	T visitTransition_block(HopperlangParser.Transition_blockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#transition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTransition(HopperlangParser.TransitionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#condition}.
 	 * @param ctx the parse tree

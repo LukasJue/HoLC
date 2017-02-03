@@ -118,16 +118,6 @@ public interface HopperlangListener extends ParseTreeListener {
 	 */
 	void exitState_body_element(HopperlangParser.State_body_elementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link HopperlangParser#transition}.
-	 * @param ctx the parse tree
-	 */
-	void enterTransition(HopperlangParser.TransitionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link HopperlangParser#transition}.
-	 * @param ctx the parse tree
-	 */
-	void exitTransition(HopperlangParser.TransitionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#condition_block}.
 	 * @param ctx the parse tree
 	 */
@@ -138,15 +128,25 @@ public interface HopperlangListener extends ParseTreeListener {
 	 */
 	void exitCondition_block(HopperlangParser.Condition_blockContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link HopperlangParser#condition_line}.
+	 * Enter a parse tree produced by {@link HopperlangParser#transition_block}.
 	 * @param ctx the parse tree
 	 */
-	void enterCondition_line(HopperlangParser.Condition_lineContext ctx);
+	void enterTransition_block(HopperlangParser.Transition_blockContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link HopperlangParser#condition_line}.
+	 * Exit a parse tree produced by {@link HopperlangParser#transition_block}.
 	 * @param ctx the parse tree
 	 */
-	void exitCondition_line(HopperlangParser.Condition_lineContext ctx);
+	void exitTransition_block(HopperlangParser.Transition_blockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#transition}.
+	 * @param ctx the parse tree
+	 */
+	void enterTransition(HopperlangParser.TransitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#transition}.
+	 * @param ctx the parse tree
+	 */
+	void exitTransition(HopperlangParser.TransitionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#condition}.
 	 * @param ctx the parse tree

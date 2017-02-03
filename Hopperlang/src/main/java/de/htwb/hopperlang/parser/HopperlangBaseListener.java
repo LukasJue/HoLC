@@ -148,18 +148,6 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTransition(HopperlangParser.TransitionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTransition(HopperlangParser.TransitionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterCondition_block(HopperlangParser.Condition_blockContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -172,13 +160,25 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCondition_line(HopperlangParser.Condition_lineContext ctx) { }
+	@Override public void enterTransition_block(HopperlangParser.Transition_blockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCondition_line(HopperlangParser.Condition_lineContext ctx) { }
+	@Override public void exitTransition_block(HopperlangParser.Transition_blockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTransition(HopperlangParser.TransitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTransition(HopperlangParser.TransitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
