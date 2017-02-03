@@ -1,0 +1,137 @@
+diff -r 8455eabb1624 pygments/lexers/_mapping.py
+--- a/pygments/lexers/_mapping.py	Mon Jan 30 07:42:59 2017 +0100
++++ b/pygments/lexers/_mapping.py	Fri Feb 03 19:33:10 2017 +0100
+@@ -180,6 +180,7 @@
+     'HaskellLexer': ('pygments.lexers.haskell', 'Haskell', ('haskell', 'hs'), ('*.hs',), ('text/x-haskell',)),
+     'HaxeLexer': ('pygments.lexers.haxe', 'Haxe', ('hx', 'haxe', 'hxsl'), ('*.hx', '*.hxsl'), ('text/haxe', 'text/x-haxe', 'text/x-hx')),
+     'HexdumpLexer': ('pygments.lexers.hexdump', 'Hexdump', ('hexdump',), (), ()),
++    'HopperlangLexer': ('pygments.lexers.hopperlang', 'Hopperlang', ('hl', 'hlang', 'hopperlang'), ('*.hl',), ()),
+     'HsailLexer': ('pygments.lexers.asm', 'HSAIL', ('hsail', 'hsa'), ('*.hsail',), ('text/x-hsail',)),
+     'HtmlDjangoLexer': ('pygments.lexers.templates', 'HTML+Django/Jinja', ('html+django', 'html+jinja', 'htmldjango'), (), ('text/html+django', 'text/html+jinja')),
+     'HtmlGenshiLexer': ('pygments.lexers.templates', 'HTML+Genshi', ('html+genshi', 'html+kid'), (), ('text/html+genshi',)),
+diff -r 8455eabb1624 pygments/lexers/hopperlang.py
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/pygments/lexers/hopperlang.py	Fri Feb 03 19:33:10 2017 +0100
+@@ -0,0 +1,70 @@
++# -*- coding: utf-8 -*-
++"""
++    pygments.lexers.hopperlang
++    ~~~~~~~~~~~~~~~~~~~~
++
++    Lexer for Hopperlang
++
++    :license: BSD, see LICENSE for details.
++"""
++
++import re
++
++from pygments.lexer import ExtendedRegexLexer, bygroups, words
++from pygments.token import Comment, Keyword, Operator, Name, \
++    Number, Text, Punctuation
++
++__all__ = ['HopperlangLexer']
++
++line_re = re.compile('.*?\n')
++
++
++class HopperlangLexer(ExtendedRegexLexer):
++    """
++    For `Hopperlang <https://bitbucket.org/LukasJue/hopperlang>`_ source code.
++    """
++
++    name = "Hopperlang"
++    aliases = ['hl', 'hlang', 'hopperlang']
++    filenames = ['*.hl']
++
++    flags = re.DOTALL | re.MULTILINE
++
++    tokens = {
++        'root': [
++            (r'#.*?$', Comment.Single),
++            (r'=begin\s.*?\n=end.*?$', Comment.Multiline),
++            # keywords
++            (words((
++                'do', 'end',
++                'signal', 'automat',
++                'state', 'when', 'goto',
++                ),
++                suffix=r'\b'),
++                Keyword),
++            (words((
++                'input', 'local', 'output'),
++                suffix=r'\b'),
++                Keyword.Pseudo),
++            # operators
++            (r'(not|and|or|xor)\b', Operator.Word),
++            # builtin types
++            (words((
++                'int', 'bus'),
++                suffix=r'([0-9]+)\b'),
++                Name.Builtin),
++            (words((
++                'hilo', 'bit'),
++                suffix=r'\b'),
++                Name.Builtin),
++            # Numbers
++            (r'([\d]+(?:_\d+)*)(\s*)([/?])?',
++             bygroups(Number.Integer, Text, Operator)),
++            # Names
++            (r'\$\w+', Name.Variable.Global),
++            (r'[-+/*%=<>&!^|~]=?', Operator),
++            (r'[a-zA-Z_]\w*[!?]?', Name),
++            (r'[(){};,/?:\\]', Punctuation),
++            (r'\s+', Text)
++        ]
++    }
+diff -r 8455eabb1624 tests/examplefiles/example.hl
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/tests/examplefiles/example.hl	Fri Feb 03 19:33:10 2017 +0100
+@@ -0,0 +1,48 @@
++# Hopperlang source code example
++
++# signal blocks are handy
++signal input (
++    clk     hilo
++    reset   bit
++    x       int8
++)
++
++signal output (
++    y      int8
++    leds   bus8
++)
++
++# you can declare a signal like this too
++signal local z int16
++
++# this is the example state machine
++automat example do
++
++    state s0 do
++        when (x=1) and not (x=2) goto s1
++        y=0
++    end
++
++    state s1 do
++        when (x=1) goto s2
++        when (x=3) goto s2
++    end
++
++    state s2 do
++        when (x=0) goto s1
++        when (x=1) goto s0
++
++        y=0
++    end
++
++    state s3 do
++        when (x=1) do
++            # you can do stacked whens
++            when (y=4)     goto s0
++            when not (y=0) goto s1
++        end
++
++        x=1
++    end 
++
++end
