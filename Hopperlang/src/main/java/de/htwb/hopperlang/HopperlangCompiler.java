@@ -47,7 +47,7 @@ public class HopperlangCompiler {
         }
 
         for(HopperlangParser.State_blockContext state : pool.getStates()) {
-            states.add(new State(state, pool));
+            states.add(new State(state, pool, signals));
         }
     }
 
@@ -55,23 +55,46 @@ public class HopperlangCompiler {
 
         for(State state: states) {
             for (Transition transition : state.transitions) {
-                System.out.println("Condition for "+transition.toString()+" is "+transition.condition);
+                System.out.println("Condition for "+transition.toString()+" is "+transition.stringCondition);
                 if(!HopperlangUtils.containsState(states, transition.dst)) {
-                    System.out.println("Transition destination doesn't exist! "+transition.toString());
+                    System.err.println("Transition destination doesn't exist! "+transition.toString());
                     return false;
+                }
+                for(String signalName : transition.condition.getUsedSignals()) {
+                    if(signals.containsSignal(signalName)) {
+                        Signal signal = signals.getSignal(signalName);
+                        if(signal.modifier == SignalPos.OUTPUT) {
+                            System.err.println("Can't read from output signal: "+signal.name+" In transition: "+transition.toString());
+                            return false;
+                        }
+                    } else {
+                        System.err.println("Not existing Signal: "+signalName+" in Transition: "+transition.toString()+"\t"+transition.stringCondition);
+                        return false;
+                    }
                 }
             }
 
             for(Assignment assignment : state.assignments) {
                 if(signals.containsSignal(assignment.leftSide)) {
                     if(!HopperlangUtils.isIntegerNumeric(assignment.rightSide)) {
-                        if(!signals.containsSignal(assignment.rightSide)) {
-                            System.out.println("Signal \"" +assignment.rightSide+ "\" doesn't exist! In assignment: "+state.name+" -> "+assignment.toString());
+                        if(signals.containsSignal(assignment.rightSide)) {
+                            Signal signal = signals.getSignal(assignment.rightSide);
+                            if(signal.modifier == SignalPos.OUTPUT) {
+                                System.err.println("Can't read from output signal: "+signal.name+" In assignment: "+state.name+" -> "+assignment.toString());
+                                return false;
+                            }
+                        } else {
+                            System.err.println("Signal \"" +assignment.rightSide+ "\" doesn't exist! In assignment: "+state.name+" -> "+assignment.toString());
                             return false;
                         }
                     }
+
+                    Signal signal = signals.getSignal(assignment.leftSide);
+                    if(signal.modifier == SignalPos.INPUT) {
+                        System.err.println("Can't write to input signal: "+signal.name+" In assignment: "+state.name+" -> "+assignment.toString());
+                    }
                 } else {
-                    System.out.println("Signal \""+assignment.leftSide+"\" doesn't exist! In: "+state.name+"\t"+assignment.toString());
+                    System.err.println("Signal \""+assignment.leftSide+"\" doesn't exist! In: "+state.name+"\t"+assignment.toString());
                     return false;
                 }
             }
@@ -104,6 +127,18 @@ public class HopperlangCompiler {
             this.name = name;
             this.type = type;
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public SignalPos getModifier() {
+            return modifier;
+        }
+
+        public Type getType() {
+            return type;
+        }
     }
 
     public class Type {
@@ -124,6 +159,14 @@ public class HopperlangCompiler {
             }
         }
 
+        public SignalType getSignalType() {
+            return signalType;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
         private Type(SignalType type, int width) {
             signalType = type;
             this.width = width;
@@ -135,7 +178,7 @@ public class HopperlangCompiler {
         List<Assignment> assignments = new ArrayList<>();
         List<Transition> transitions = new ArrayList<>();
 
-        public State(HopperlangParser.State_blockContext ctx, NodePool pool) {
+        public State(HopperlangParser.State_blockContext ctx, NodePool pool, SignalPool signalPool) {
             name = ctx.name().getText();
             HopperlangParser.State_bodyContext body = ctx.state_body();
             //StateBodyElements
@@ -151,7 +194,7 @@ public class HopperlangCompiler {
 
             for(NodePool.Transition transition : pool.getTransitions()) {
                 if(transition.src.equals(name)) {
-                    transitions.add(new Transition(transition));
+                    transitions.add(new Transition(transition, signalPool));
                 }
             }
             pool.getTransitions().removeAll(transitions);
@@ -174,37 +217,47 @@ public class HopperlangCompiler {
 
         String src;
         String dst;
-        String condition;
+        String stringCondition;
+        Condition condition;
 
-        public Transition(NodePool.Transition transition) {
+        public Transition(NodePool.Transition transition, SignalPool pool) {
             this.src = transition.src;
             this.dst = transition.dst;
-            condition = new String();
+            stringCondition = new String();
             for(int i = 0; i < transition.conditions.size(); i++) {
                 HopperlangParser.ConditionContext ctx = transition.conditions.get(i);
                 creatCondition(ctx);
                 if(i < transition.conditions.size() -1) {
-                    condition += " AND ";
+                    stringCondition += " AND ";
                 }
             }
+
+            condition = new Condition(pool, stringCondition);
         }
 
         private void creatCondition(HopperlangParser.ConditionContext ctx) {
             if(ctx.getChildCount() > 1) {
                 //Expression with conjunction
-                condition += ("(");
+                stringCondition += (" ( ");
             }
             for(int j = 0; j < ctx.getChildCount(); j++) {
                 ParseTree child = ctx.getChild(j);
                 if(child instanceof HopperlangParser.Boolean_expressionContext) {
                     HopperlangParser.Boolean_expressionContext expr = (HopperlangParser.Boolean_expressionContext)child;
+                    int notCount = 0;
                     while(expr.getChildCount() == 2) {
-                        condition += " NOT";
+                        notCount++;
                         expr = expr.boolean_expression();
                     }
-                    condition += expr.getText().replace("(", " ").replace(")", " ");
+                    String text = expr.getText();
+                    if((notCount % 2) == 1) { //uneven
+                        text = text.replace("=", " /= ");
+                    } else {
+                        text = text.replace("=", " = ");
+                    }
+                    stringCondition += text.replace("(", " ").replace(")", " ");
                 } else if(child instanceof HopperlangParser.ConjunctionContext) {
-                    condition += child.getText().toUpperCase();
+                    stringCondition += child.getText().toUpperCase();
                 } else if (child instanceof HopperlangParser.ConditionContext) {
                     creatCondition((HopperlangParser.ConditionContext)child);
                 }
@@ -212,7 +265,7 @@ public class HopperlangCompiler {
             }
             if(ctx.getChildCount() > 1) {
                 //Expression with conjunction
-                condition += (") ");
+                stringCondition += (" ) ");
             }
         }
 
@@ -234,6 +287,105 @@ public class HopperlangCompiler {
         @Override
         public String toString() {
             return leftSide+" = "+rightSide;
+        }
+    }
+
+    public static class Condition {
+        List<ConditionPart> parts = new ArrayList<>();
+        List<String> usedSignals = new ArrayList<>();
+        List<Integer> usedNumbers = new ArrayList<>();
+        private SignalPool pool;
+        public Condition(SignalPool pool, String s) {
+            this.pool = pool;
+            String[] stringParts = s.split(" ");
+            for(String string : stringParts) {
+                if(string.length() > 0) {
+                    ConditionPart part = ConditionPart.parse(string);
+                    parts.add(part);
+                    if(part == ConditionPart.Signal) {
+                        usedSignals.add(string);
+                    } else if(part == ConditionPart.Number) {
+                        usedNumbers.add(Integer.parseInt(string));
+                    }
+                }
+
+            }
+        }
+
+        public List<ConditionPart> getParts() {
+            return parts;
+        }
+
+        public List<String> getUsedSignals() {
+            return usedSignals;
+        }
+
+        public List<Integer> getUsedNumbers() {
+            return usedNumbers;
+        }
+
+        @Override
+        public String toString() {
+            return HopperlangUtils.conditionToString(pool, this);
+        }
+    }
+
+    public static enum ConditionPart {
+        Signal,
+        Equals,
+        Unequal,
+        Number,
+        OpenBracket,
+        CloseBracket,
+        And,
+        Or,
+        Xor;
+
+        public static final ConditionPart parse(String value) {
+            switch (value.toUpperCase()) {
+                case "=":
+                    return Equals;
+                case "/=":
+                    return Unequal;
+                case "(":
+                    return OpenBracket;
+                case ")":
+                    return CloseBracket;
+                case "AND":
+                    return And;
+                case "OR":
+                    return Or;
+                case "XOR":
+                    return Xor;
+                default:
+                    if (HopperlangUtils.isIntegerNumeric(value)) {
+                        return Number;
+                    }
+                    return Signal;
+
+            }
+        }
+
+        @Override
+        public String toString() {
+            switch(this) {
+                case Equals:
+                    return "=";
+                case Unequal:
+                    return "/=";
+                case And:
+                    return "AND";
+                case CloseBracket:
+                    return ")";
+                case OpenBracket:
+                    return "(";
+                case Or:
+                    return "OR";
+                case Xor:
+                    return "XOR";
+                default:
+                    return "";
+            }
         }
     }
 
@@ -297,6 +449,16 @@ public class HopperlangCompiler {
             }
 
             return false;
+        }
+
+        public Signal getSignal(String name) {
+            List<Signal> all = getAllSignals();
+            for(Signal signal: all) {
+                if(signal.name.equals(name)) {
+                    return signal;
+                }
+            }
+            return null;
         }
     }
 

@@ -119,7 +119,7 @@ public class NodePool extends HopperlangBaseListener {
 
         public Transition(HopperlangParser.TransitionContext ctx) {
             if(ctx.name() != null) { //only if final end node
-                System.out.println("Transition! "+ctx.getText());
+                System.out.println("Transition! "+ctx.getText().replace("\n", ""));
                 ParserRuleContext parent = ctx.getParent();
                 while (parent != null) {
                     if(parent instanceof HopperlangParser.Transition_blockContext) {

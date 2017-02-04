@@ -1,42 +1,44 @@
 signal input (
-    x       int8
+    x       hilo
 )
 
 signal output (
-    y   int8
+    y   int3
 )
 
+signal local (
+    test1 int3
+    test2 bus3
+)
 
-signal local z int8
+automat counter do
 
-automat example do
+state s1 do
+    y = 1
+    test2 = 1
+    test1 = test2
+    when not (test1 = test2) goto s2
+end
 
-    state s0 do
-        when (x=1) and not (x=2) goto s1
-        y=0
-    end
+state s2 do
+    y = 2
+    test2 = 1
+    test1 = test2
+    when (test2 = 1) goto s3
+end
 
-    state s1 do
-        when (x=1) goto s2
-        when (x=3) goto s2
-    end
+state s3 do
+    y = 3
+    test2 = 1
+    test1 = test2
+    when (test2=1) goto s4
+end
 
-    state s2 do
-        when (x=0) goto s1
-        when (x=1) goto s0
-
-        y=0
-    end
-
-    state s3 do
-        when (x=1) do
-            when (y=4)     goto s0
-            when not (y=0) or (y=2) do
-                when (y=1) xor (y=5)goto s1
-            end
-        end
-
-        x=1
-    end 
+state s4 do
+    y = 4
+    test2 = 1
+    test1 = test2
+    when (test2=1) goto s1
+end
 
 end
