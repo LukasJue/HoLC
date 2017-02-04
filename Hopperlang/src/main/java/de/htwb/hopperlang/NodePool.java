@@ -3,7 +3,7 @@ package de.htwb.hopperlang;
 import de.htwb.hopperlang.parser.HopperlangBaseListener;
 import de.htwb.hopperlang.parser.HopperlangParser;
 import de.htwb.hopperlang.util.HopperlangUtils;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;

@@ -1,15 +1,11 @@
 package de.htwb.hopperlang;
 
-import de.htwb.hopperlang.parser.HopperlangBaseListener;
 import de.htwb.hopperlang.parser.HopperlangLexer;
 import de.htwb.hopperlang.parser.HopperlangParser;
-import org.antlr.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,11 +22,13 @@ public class Main {
         if(argList.contains(HELP_FILE_ARGUMENT_FLAG_SHORT) ||
                 argList.contains(HELP_FILE_ARGUMENT_FLAG_LONG)) {
             StringBuilder builder = new StringBuilder();
-            builder.append("Hopperlang CLI: ");
+            builder.append("Hopperlang CLI: \n");
             builder.append("\t"+INPUT_FILE_ARGUMENT_FLAG+" : Input Hopperlang File, otherwise reading from stdin \n");
             builder.append("\t"+OUTPUT_FILE_ARGUMENT_FLAG+" : Output Hopperlang File, otherwise writing to stdout \n");
             builder.append("\t"+HELP_FILE_ARGUMENT_FLAG_SHORT+", "+HELP_FILE_ARGUMENT_FLAG_LONG+" : "+
-                            "This help page");
+                            "This help page\n");
+            System.out.println(builder.toString());
+            System.exit(0);
         }
 
 	    // write your code here

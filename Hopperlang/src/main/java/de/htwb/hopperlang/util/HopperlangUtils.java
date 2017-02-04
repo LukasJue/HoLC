@@ -3,7 +3,6 @@ package de.htwb.hopperlang.util;
 import com.sun.corba.se.impl.io.TypeMismatchException;
 import de.htwb.hopperlang.HopperlangCompiler;
 import de.htwb.hopperlang.HopperlangCompiler.SignalPos;
-import de.htwb.hopperlang.VHDLDocument;
 import de.htwb.hopperlang.parser.HopperlangParser;
 
 import java.util.List;
