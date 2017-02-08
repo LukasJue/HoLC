@@ -1,44 +1,30 @@
-signal input (
-    x       hilo
-)
+signal output y hilo
+signal local help int2
+signal local help2 bus2
 
-signal output (
-    y   int3
-)
+automat halbierer do
+	state s0 do
+		help=0
+		y=0
+		help2=1		
+		when (help<0) and not(help2<=help) goto s1
+	end
 
-signal local (
-    test1 int3
-    test2 bus3
-)
+	state s1 do
+		help=1
+		when (help>1) goto s2
+	end
 
-automat counter do
+	state s2 do
+		help = 2
 
-state s1 do
-    y = 1
-    test2 = 1
-    test1 = test2
-    when not (test1 = test2) goto s2
-end
+		y = 1
+		help2 = 1
+		when (help>=1) or (help2=1) goto s3
+	end
 
-state s2 do
-    y = 2
-    test2 = 1
-    test1 = test2
-    when (test2 = 1) goto s3
-end
-
-state s3 do
-    y = 3
-    test2 = 1
-    test1 = test2
-    when (test2=1) goto s4
-end
-
-state s4 do
-    y = 4
-    test2 = 1
-    test1 = test2
-    when (test2=1) goto s1
-end
-
+	state s3 do
+		help=3
+		when (help = 2) goto s0
+	end
 end

@@ -1,4 +1,4 @@
-// Generated from C:/Users/juene/Git/hopperlang/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
+// Generated from /home/laokoon/Git/hopperlang/Hopperlang/src/main/res/Hopperlang.g4 by ANTLR 4.6
 package de.htwb.hopperlang.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -113,6 +113,12 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBoolean_expression(HopperlangParser.Boolean_expressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#comparison}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparison(HopperlangParser.ComparisonContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -136,6 +142,12 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitName(HopperlangParser.NameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#unary_operator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnary_operator(HopperlangParser.Unary_operatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#type}.
 	 * @param ctx the parse tree

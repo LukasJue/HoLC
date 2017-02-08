@@ -1,4 +1,4 @@
-// Generated from C:/Users/juene/Git/hopperlang/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
+// Generated from /home/laokoon/Git/hopperlang/Hopperlang/src/main/res/Hopperlang.g4 by ANTLR 4.6
 package de.htwb.hopperlang.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -220,6 +220,18 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterComparison(HopperlangParser.ComparisonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComparison(HopperlangParser.ComparisonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAssignment(HopperlangParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -263,6 +275,18 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitName(HopperlangParser.NameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUnary_operator(HopperlangParser.Unary_operatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnary_operator(HopperlangParser.Unary_operatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

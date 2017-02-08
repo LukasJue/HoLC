@@ -139,6 +139,54 @@ public class HopperlangCompiler {
         public Type getType() {
             return type;
         }
+
+        public String castTo(Signal target) {
+                switch(target.getType().getSignalType()) {
+                    case LOGIC:
+                        switch (getType().getSignalType()) {
+                            case LOGIC:
+                                return getName();
+                            case VECTOR:
+                                return getName()+"(0)";
+                            case INT:
+                                return "std_logic_vector(to_unsigned("+getName()+", "+getType().getWidth()+"))(0)";
+                            default:
+                                return getName();
+                        }
+                    case INT:
+                        switch (getType().getSignalType()) {
+                            case LOGIC:
+                                System.err.println("Conversion of single bit to integer nor supported! bit: "+
+                                        getName()+" integer:" +target.getName());
+                                return getName();
+                            case VECTOR:
+                                return "to_integer(unsigned("+getName()+"))";
+                            case INT:
+                                return getName();
+                            default:
+                                return getName();
+                        }
+                    case VECTOR:
+                        switch (getType().getSignalType()) {
+                            case LOGIC:
+                                StringBuilder builder = new StringBuilder();
+                                builder.append("\"");
+                                for(int i = 0; i < target.getType().getWidth()-1; i++) {
+                                    builder.append("0");
+                                }
+                                builder.append("\"&"+getName());
+                                return builder.toString();
+                            case VECTOR:
+                                return getName();
+                            case INT:
+                                return "std_logic_vector(to_unsigned("+getName()+", "+getType().getWidth()+"))";
+                            default:
+                                return getName();
+                        }
+                    default:
+                        return getName();
+                }
+        }
     }
 
     public class Type {
@@ -250,10 +298,47 @@ public class HopperlangCompiler {
                         expr = expr.boolean_expression();
                     }
                     String text = expr.getText();
-                    if((notCount % 2) == 1) { //uneven
-                        text = text.replace("=", " /= ");
-                    } else {
-                        text = text.replace("=", " = ");
+                    boolean uneven = (notCount % 2) == 1;
+                    ConditionPart unary = ConditionPart.parse(
+                            expr.comparison().unary_operator().getText());
+                    switch (unary) {
+                        case Lower:
+                            if(uneven) {
+                                text = text.replace(unary.toString(), " "+ConditionPart.GreaterEquals.toString()+" ");
+                            } else {
+                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
+                            }
+                            break;
+                        case LowerEquals:
+                            if(uneven) {
+                                text = text.replace(unary.toString(), " "+ConditionPart.Greater.toString()+" ");
+                            } else {
+                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
+                            }
+                            break;
+                        case Equals:
+                            if(uneven) {
+                                text = text.replace(unary.toString(), " "+ConditionPart.Unequal.toString()+" ");
+                            } else {
+                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
+                            }
+                            break;
+                        case GreaterEquals:
+                            if(uneven) {
+                                text = text.replace(unary.toString(), " "+ConditionPart.Lower.toString()+" ");
+                            } else {
+                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
+                            }
+                            break;
+                        case Greater:
+                            if(uneven) {
+                                text = text.replace(unary.toString(), " "+ConditionPart.LowerEquals.toString()+" ");
+                            } else {
+                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
+                            }
+                            break;
+                        default:
+                            break;
                     }
                     stringCondition += text.replace("(", " ").replace(")", " ");
                 } else if(child instanceof HopperlangParser.ConjunctionContext) {
@@ -332,7 +417,11 @@ public class HopperlangCompiler {
 
     public static enum ConditionPart {
         Signal,
+        Lower,
+        LowerEquals,
         Equals,
+        Greater,
+        GreaterEquals,
         Unequal,
         Number,
         OpenBracket,
@@ -357,6 +446,14 @@ public class HopperlangCompiler {
                     return Or;
                 case "XOR":
                     return Xor;
+                case "<":
+                    return Lower;
+                case "<=":
+                    return LowerEquals;
+                case ">":
+                    return Greater;
+                case ">=":
+                    return GreaterEquals;
                 default:
                     if (HopperlangUtils.isIntegerNumeric(value)) {
                         return Number;
@@ -383,6 +480,14 @@ public class HopperlangCompiler {
                     return "OR";
                 case Xor:
                     return "XOR";
+                case Lower:
+                    return "<";
+                case LowerEquals:
+                    return "<=";
+                case Greater:
+                    return ">";
+                case GreaterEquals:
+                    return ">=";
                 default:
                     return "";
             }

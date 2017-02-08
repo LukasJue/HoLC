@@ -1,4 +1,4 @@
-// Generated from C:/Users/juene/Git/hopperlang/Hopperlang/src/main/res\Hopperlang.g4 by ANTLR 4.6
+// Generated from /home/laokoon/Git/hopperlang/Hopperlang/src/main/res/Hopperlang.g4 by ANTLR 4.6
 package de.htwb.hopperlang.parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -178,6 +178,16 @@ public interface HopperlangListener extends ParseTreeListener {
 	 */
 	void exitBoolean_expression(HopperlangParser.Boolean_expressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#comparison}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparison(HopperlangParser.ComparisonContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#comparison}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparison(HopperlangParser.ComparisonContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#assignment}.
 	 * @param ctx the parse tree
 	 */
@@ -217,6 +227,16 @@ public interface HopperlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitName(HopperlangParser.NameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#unary_operator}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnary_operator(HopperlangParser.Unary_operatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#unary_operator}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnary_operator(HopperlangParser.Unary_operatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#type}.
 	 * @param ctx the parse tree

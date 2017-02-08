@@ -56,11 +56,10 @@ public final class HopperlangUtils {
         for(int i = 0; i < condition.getParts().size(); i++) {
             HopperlangCompiler.ConditionPart part = condition.getParts().get(i);
             if(part == HopperlangCompiler.ConditionPart.Signal) {
-                if(i > 0 && (condition.getParts().get(i-1) == HopperlangCompiler.ConditionPart.Equals ||
-                        condition.getParts().get(i-1) == HopperlangCompiler.ConditionPart.Unequal)) {
+                if(i > 0 && isUnary(condition.getParts().get(i-1))) {
                     HopperlangCompiler.Signal leftSide = pool.getSignal(condition.getUsedSignals().get(signalNameCount-1));
                     HopperlangCompiler.Signal rightSide = pool.getSignal(condition.getUsedSignals().get(signalNameCount));
-                    builder.append(getConversionWrappedRightSide(leftSide, rightSide));
+                    builder.append(rightSide.castTo(leftSide));
                 } else {
                     builder.append(condition.getUsedSignals().get(signalNameCount));
                 }
@@ -76,6 +75,25 @@ public final class HopperlangUtils {
             builder.append(" ");
         }
         return builder.toString();
+    }
+
+    private static final boolean isUnary(HopperlangCompiler.ConditionPart part) {
+        switch (part) {
+            case Equals:
+                return true;
+            case Unequal:
+                return true;
+            case Lower:
+                return true;
+            case LowerEquals:
+                return true;
+            case GreaterEquals:
+                return true;
+            case Greater:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public static final String formatNumberForSignal(HopperlangCompiler.Signal signal, int value) {
@@ -110,54 +128,6 @@ public final class HopperlangUtils {
                 return builder.toString();
             default:
                 return Integer.toString(value);
-        }
-    }
-
-    public static final String getConversionWrappedRightSide(HopperlangCompiler.Signal left, HopperlangCompiler.Signal right) {
-        switch(left.getType().getSignalType()) {
-            case LOGIC:
-                switch (right.getType().getSignalType()) {
-                    case LOGIC:
-                        return right.getName();
-                    case VECTOR:
-                        return right.getName()+"(0)";
-                    case INT:
-                        return "std_logic_vector(to_unsigned("+right.getName()+", "+right.getType().getWidth()+"))(0)";
-                    default:
-                        return right.getName();
-                }
-            case INT:
-                switch (right.getType().getSignalType()) {
-                    case LOGIC:
-                        System.err.println("Conversion of single bit to integer nor supported! bit: "+
-                                right.getName()+" integer:" +left.getName());
-                        return right.getName();
-                    case VECTOR:
-                        return "to_integer(unsigned("+right.getName()+"))";
-                    case INT:
-                        return right.getName();
-                    default:
-                        return right.getName();
-                }
-            case VECTOR:
-                switch (right.getType().getSignalType()) {
-                    case LOGIC:
-                        StringBuilder builder = new StringBuilder();
-                        builder.append("\"");
-                        for(int i = 0; i < left.getType().getWidth()-1; i++) {
-                            builder.append("0");
-                        }
-                        builder.append("\"&"+right.getName());
-                        return builder.toString();
-                    case VECTOR:
-                        return right.getName();
-                    case INT:
-                        return "std_logic_vector(to_unsigned("+right.getName()+", "+right.getType().getWidth()+"))";
-                    default:
-                        return right.getName();
-                }
-            default:
-                return right.getName();
         }
     }
 }

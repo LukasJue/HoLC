@@ -2,8 +2,6 @@ package de.htwb.hopperlang;
 
 import de.htwb.hopperlang.util.HopperlangUtils;
 
-import static de.htwb.hopperlang.util.HopperlangUtils.getConversionWrappedRightSide;
-
 /**
  * Created by laokoon on 03.02.17.
  */
@@ -158,13 +156,13 @@ public class VHDLDocument {
         for (int i = 0; i < state.getAssignments().size(); i++) {
             HopperlangCompiler.Assignment assignment = state.getAssignments().get(i);
             builder.append(assignment.leftSide);
-            HopperlangCompiler.Signal leftSignal = compiler.getSignals().getSignal(assignment.leftSide);
+            HopperlangCompiler.Signal leftSide = compiler.getSignals().getSignal(assignment.leftSide);
             builder.append("<=");
             if(HopperlangUtils.isIntegerNumeric(assignment.rightSide)) {
-                builder.append(HopperlangUtils.formatNumberForSignal(leftSignal, Integer.parseInt(assignment.rightSide)));
+                builder.append(HopperlangUtils.formatNumberForSignal(leftSide, Integer.parseInt(assignment.rightSide)));
             } else {
                 HopperlangCompiler.Signal rightSide = compiler.getSignals().getSignal(assignment.rightSide);
-                builder.append(getConversionWrappedRightSide(leftSignal, rightSide));
+                builder.append(rightSide.castTo(leftSide));
             }
             builder.append(";\n");
         }

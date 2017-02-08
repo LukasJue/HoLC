@@ -19,7 +19,12 @@ AND: 'and';
 OR: 'or';
 XOR: 'xor';
 
-ASSIGNMENT: '=';
+
+LOWER: '<';
+LOWER_EQUAL: '<=';
+EQUAL: '=';
+GREATER_EQUAL: '>=';
+GREATER: '>';
 OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';
 
@@ -90,10 +95,13 @@ conjunction :  AND
 	    ;
 
 boolean_expression : NEGATION   boolean_expression
-		   | OPEN_BRACKET assignment CLOSE_BRACKET
+		   | OPEN_BRACKET comparison CLOSE_BRACKET
 		   ;
 
-assignment : assignment_left  ASSIGNMENT assignment_right
+comparison: assignment_left unary_operator assignment_right
+            ;
+
+assignment : assignment_left  EQUAL assignment_right
 		   ;
 
 assignment_left: name
@@ -102,6 +110,13 @@ assignment_right: name
                 | NUMBER
                 ;
 name : NAME;
+
+unary_operator: LOWER
+                | LOWER_EQUAL
+                | EQUAL
+                | GREATER_EQUAL
+                | GREATER;
+
 type : BIT
       | BUS
       | HILO
