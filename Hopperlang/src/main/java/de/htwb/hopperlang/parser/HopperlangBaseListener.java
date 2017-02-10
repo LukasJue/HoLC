@@ -268,13 +268,13 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterName(HopperlangParser.NameContext ctx) { }
+	@Override public void enterAssignment_operator(HopperlangParser.Assignment_operatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitName(HopperlangParser.NameContext ctx) { }
+	@Override public void exitAssignment_operator(HopperlangParser.Assignment_operatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -299,6 +299,30 @@ public class HopperlangBaseListener implements HopperlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitType(HopperlangParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumber(HopperlangParser.NumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumber(HopperlangParser.NumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterName(HopperlangParser.NameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitName(HopperlangParser.NameContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

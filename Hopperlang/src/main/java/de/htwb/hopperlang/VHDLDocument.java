@@ -142,7 +142,7 @@ public class VHDLDocument {
                 builder.append("elsif ");
             }
             HopperlangCompiler.Transition transition = state.getTransitions().get(i);
-            builder.append(transition.condition);
+            builder.append(transition.getCastedCondition());
             builder.append("then\n");
             builder.append(NEXT_STATE+"<="+transition.dst+";\n");
         }
@@ -155,15 +155,7 @@ public class VHDLDocument {
         builder.append("when "+state.name+" => ");
         for (int i = 0; i < state.getAssignments().size(); i++) {
             HopperlangCompiler.Assignment assignment = state.getAssignments().get(i);
-            builder.append(assignment.leftSide);
-            HopperlangCompiler.Signal leftSide = compiler.getSignals().getSignal(assignment.leftSide);
-            builder.append("<=");
-            if(HopperlangUtils.isIntegerNumeric(assignment.rightSide)) {
-                builder.append(HopperlangUtils.formatNumberForSignal(leftSide, Integer.parseInt(assignment.rightSide)));
-            } else {
-                HopperlangCompiler.Signal rightSide = compiler.getSignals().getSignal(assignment.rightSide);
-                builder.append(rightSide.castTo(leftSide));
-            }
+            builder.append(assignment.getCasted());
             builder.append(";\n");
         }
         return builder.toString();

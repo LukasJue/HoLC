@@ -137,11 +137,11 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment_right(HopperlangParser.Assignment_rightContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link HopperlangParser#name}.
+	 * Visit a parse tree produced by {@link HopperlangParser#assignment_operator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitName(HopperlangParser.NameContext ctx);
+	T visitAssignment_operator(HopperlangParser.Assignment_operatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link HopperlangParser#unary_operator}.
 	 * @param ctx the parse tree
@@ -154,4 +154,16 @@ public interface HopperlangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitType(HopperlangParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber(HopperlangParser.NumberContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link HopperlangParser#name}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitName(HopperlangParser.NameContext ctx);
 }

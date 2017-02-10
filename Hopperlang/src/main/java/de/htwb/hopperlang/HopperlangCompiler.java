@@ -55,12 +55,11 @@ public class HopperlangCompiler {
 
         for(State state: states) {
             for (Transition transition : state.transitions) {
-                System.out.println("Condition for "+transition.toString()+" is "+transition.stringCondition);
                 if(!HopperlangUtils.containsState(states, transition.dst)) {
                     System.err.println("Transition destination doesn't exist! "+transition.toString());
                     return false;
                 }
-                for(String signalName : transition.condition.getUsedSignals()) {
+                for(String signalName : transition.getUsedSignals()) {
                     if(signals.containsSignal(signalName)) {
                         Signal signal = signals.getSignal(signalName);
                         if(signal.modifier == SignalPos.OUTPUT) {
@@ -68,17 +67,18 @@ public class HopperlangCompiler {
                             return false;
                         }
                     } else {
-                        System.err.println("Not existing Signal: "+signalName+" in Transition: "+transition.toString()+"\t"+transition.stringCondition);
+                        System.err.println("Not existing Signal: "+signalName+" in Transition: "+transition.toString()+"\t"+transition.getConditionsString());
                         return false;
                     }
                 }
+                System.out.println("Condition for "+transition.toString()+" is "+transition.getConditionsString());
             }
 
             for(Assignment assignment : state.assignments) {
                 if(signals.containsSignal(assignment.leftSide)) {
-                    if(!HopperlangUtils.isIntegerNumeric(assignment.rightSide)) {
-                        if(signals.containsSignal(assignment.rightSide)) {
-                            Signal signal = signals.getSignal(assignment.rightSide);
+                    for(String signalName : assignment.rightSide.usedSignals) {
+                        if(signals.containsSignal(signalName)) {
+                            Signal signal = signals.getSignal(signalName);
                             if(signal.modifier == SignalPos.OUTPUT) {
                                 System.err.println("Can't read from output signal: "+signal.name+" In assignment: "+state.name+" -> "+assignment.toString());
                                 return false;
@@ -235,7 +235,7 @@ public class HopperlangCompiler {
                 for(int j = 0; j < child.getChildCount(); j++) {
                     ParseTree grandchild = child.getChild(j);
                     if(grandchild instanceof HopperlangParser.AssignmentContext) {
-                        assignments.add(new Assignment((HopperlangParser.AssignmentContext)grandchild));
+                        assignments.add(new Assignment(signalPool, (HopperlangParser.AssignmentContext)grandchild));
                     }
                 }
             }
@@ -265,139 +265,172 @@ public class HopperlangCompiler {
 
         String src;
         String dst;
-        String stringCondition;
-        Condition condition;
+        List<Condition> conditions = new ArrayList<>();
+        List<String> usedSignals = new ArrayList<>();
 
         public Transition(NodePool.Transition transition, SignalPool pool) {
             this.src = transition.src;
             this.dst = transition.dst;
-            stringCondition = new String();
             for(int i = 0; i < transition.conditions.size(); i++) {
-                HopperlangParser.ConditionContext ctx = transition.conditions.get(i);
-                creatCondition(ctx);
-                if(i < transition.conditions.size() -1) {
-                    stringCondition += " AND ";
-                }
+                Condition condition = new Condition(pool, transition.conditions.get(i));
+                conditions.add(condition);
+                usedSignals.addAll(condition.usedSignals);
             }
-
-            condition = new Condition(pool, stringCondition);
         }
 
-        private void creatCondition(HopperlangParser.ConditionContext ctx) {
-            if(ctx.getChildCount() > 1) {
-                //Expression with conjunction
-                stringCondition += (" ( ");
-            }
-            for(int j = 0; j < ctx.getChildCount(); j++) {
-                ParseTree child = ctx.getChild(j);
-                if(child instanceof HopperlangParser.Boolean_expressionContext) {
-                    HopperlangParser.Boolean_expressionContext expr = (HopperlangParser.Boolean_expressionContext)child;
-                    int notCount = 0;
-                    while(expr.getChildCount() == 2) {
-                        notCount++;
-                        expr = expr.boolean_expression();
-                    }
-                    String text = expr.getText();
-                    boolean uneven = (notCount % 2) == 1;
-                    ConditionPart unary = ConditionPart.parse(
-                            expr.comparison().unary_operator().getText());
-                    switch (unary) {
-                        case Lower:
-                            if(uneven) {
-                                text = text.replace(unary.toString(), " "+ConditionPart.GreaterEquals.toString()+" ");
-                            } else {
-                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
-                            }
-                            break;
-                        case LowerEquals:
-                            if(uneven) {
-                                text = text.replace(unary.toString(), " "+ConditionPart.Greater.toString()+" ");
-                            } else {
-                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
-                            }
-                            break;
-                        case Equals:
-                            if(uneven) {
-                                text = text.replace(unary.toString(), " "+ConditionPart.Unequal.toString()+" ");
-                            } else {
-                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
-                            }
-                            break;
-                        case GreaterEquals:
-                            if(uneven) {
-                                text = text.replace(unary.toString(), " "+ConditionPart.Lower.toString()+" ");
-                            } else {
-                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
-                            }
-                            break;
-                        case Greater:
-                            if(uneven) {
-                                text = text.replace(unary.toString(), " "+ConditionPart.LowerEquals.toString()+" ");
-                            } else {
-                                text = text.replace(unary.toString(), " "+unary.toString()+" ");
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    stringCondition += text.replace("(", " ").replace(")", " ");
-                } else if(child instanceof HopperlangParser.ConjunctionContext) {
-                    stringCondition += child.getText().toUpperCase();
-                } else if (child instanceof HopperlangParser.ConditionContext) {
-                    creatCondition((HopperlangParser.ConditionContext)child);
-                }
-
-            }
-            if(ctx.getChildCount() > 1) {
-                //Expression with conjunction
-                stringCondition += (" ) ");
-            }
+        public List<String> getUsedSignals() {
+            return usedSignals;
         }
 
         @Override
         public String toString() {
             return src+" -> "+dst;
         }
+
+        public String getConditionsString() {
+            StringBuilder builder =  new StringBuilder();
+            int bracket = 0;
+            for(int i = 0; i < conditions.size(); i++) {
+                builder.append(conditions.get(i));
+                if(i < conditions.size()-1) {
+                    builder.append(" AND (");
+                    bracket++;
+                }
+            }
+            for(int i = 0; i < bracket; i++) {
+                builder.append(")");
+            }
+            return builder.toString();
+        }
+
+        public String getCastedCondition() {
+            StringBuilder builder =  new StringBuilder();
+            int bracket = 0;
+            for(int i = 0; i < conditions.size(); i++) {
+                builder.append(conditions.get(i).getCasted());
+                if(i < conditions.size()-1) {
+                    builder.append(" AND (");
+                    bracket++;
+                }
+            }
+            for(int i = 0; i < bracket; i++) {
+                builder.append(")");
+            }
+            return builder.toString();
+        }
     }
 
     public static class Assignment {
         String leftSide;
-        String rightSide;
+        AssignmentRight rightSide;
+        List<String> usedSignals = new ArrayList<>();
+        SignalPool pool;
 
-        public Assignment(HopperlangParser.AssignmentContext ctx) {
+        public Assignment(SignalPool pool, HopperlangParser.AssignmentContext ctx) {
             leftSide = ctx.assignment_left().getText();
-            rightSide = ctx.assignment_right().getText();
+            rightSide = new AssignmentRight(pool, ctx.assignment_right());
+            usedSignals = rightSide.usedSignals;
+            this.pool = pool;
+        }
+
+        private Assignment(SignalPool pool, String leftSide, AssignmentRight rightSide) {
+            this.leftSide = leftSide;
+            this.rightSide = rightSide;
+            this.pool = pool;
+            usedSignals = rightSide.usedSignals;
         }
 
         @Override
         public String toString() {
             return leftSide+" = "+rightSide;
         }
+
+        public String getCasted() {
+            Signal signal = pool.getSignal(leftSide);
+            return leftSide+" <= "+rightSide.getCastedToType(signal);
+        }
     }
 
-    public static class Condition {
-        List<ConditionPart> parts = new ArrayList<>();
-        List<String> usedSignals = new ArrayList<>();
+    public static class AssignmentRight {
+        List<AssignmentRightPart> parts = new ArrayList<>();
         List<Integer> usedNumbers = new ArrayList<>();
+        List<String> usedSignals = new ArrayList<>();
         private SignalPool pool;
-        public Condition(SignalPool pool, String s) {
+        public AssignmentRight(SignalPool pool, HopperlangParser.Assignment_rightContext ctx) {
             this.pool = pool;
-            String[] stringParts = s.split(" ");
-            for(String string : stringParts) {
-                if(string.length() > 0) {
-                    ConditionPart part = ConditionPart.parse(string);
-                    parts.add(part);
-                    if(part == ConditionPart.Signal) {
-                        usedSignals.add(string);
-                    } else if(part == ConditionPart.Number) {
-                        usedNumbers.add(Integer.parseInt(string));
-                    }
-                }
+            addAssignmentPart(ctx);
+        }
 
+        private void addAssignmentPart(HopperlangParser.Assignment_rightContext ctx) {
+            for(int i = 0; i < ctx.getChildCount(); i++) {
+                ParseTree tree = ctx.getChild(i);
+                if(tree instanceof HopperlangParser.NumberContext) {
+                    parts.add(AssignmentRightPart.Number);
+                    usedNumbers.add(Integer.parseInt(tree.getText()));
+                } else if (tree instanceof HopperlangParser.NameContext) {
+                    parts.add(AssignmentRightPart.Signal);
+                    usedSignals.add(tree.getText());
+                } else if(tree instanceof HopperlangParser.Assignment_rightContext) {
+                    addAssignmentPart((HopperlangParser.Assignment_rightContext)tree);
+                } else {
+                    parts.add(AssignmentRightPart.parse(tree.getText()));
+                }
             }
         }
 
-        public List<ConditionPart> getParts() {
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            int numberCount = 0;
+            int signalCount = 0;
+            if(parts.size() > 1) {
+                builder.append("( ");
+            }
+            for(AssignmentRightPart part : parts) {
+                switch (part) {
+                    case Number:
+                        builder.append(usedNumbers.get(numberCount++)+" ");
+                        break;
+                    case Signal:
+                        builder.append(usedSignals.get(signalCount++)+" ");
+                        break;
+                    default:
+                        builder.append(part+" ");
+                }
+            }
+            if(parts.size() > 1) {
+                builder.append(" )");
+            }
+            return builder.toString();
+        }
+
+        public String getCastedToType(Signal left) {
+            StringBuilder builder = new StringBuilder();
+            int numberCount = 0;
+            int signalCount = 0;
+            if(parts.size() > 1) {
+                builder.append("( ");
+            }
+            for(AssignmentRightPart part : parts) {
+                switch (part) {
+                    case Number:
+                        builder.append(HopperlangUtils.formatNumberForSignal(left, usedNumbers.get(numberCount++))+" ");
+                        break;
+                    case Signal:
+                        Signal signal = pool.getSignal(usedSignals.get(signalCount++));
+                        builder.append(signal.castTo(left)+" ");
+                        break;
+                    default:
+                        builder.append(part+" ");
+                }
+            }
+            if(parts.size() > 1) {
+                builder.append(" )");
+            }
+            return builder.toString();
+        }
+
+        public List<AssignmentRightPart> getParts() {
             return parts;
         }
 
@@ -408,44 +441,142 @@ public class HopperlangCompiler {
         public List<Integer> getUsedNumbers() {
             return usedNumbers;
         }
+    }
+
+    public enum AssignmentRightPart {
+        Signal,
+        Number,
+        Plus,
+        Minus;
+
+        public static final AssignmentRightPart parse(String s) {
+            switch (s) {
+                case "+":
+                    return Plus;
+                case "-":
+                    return Minus;
+                default:
+                    if(HopperlangUtils.isIntegerNumeric(s)) {
+                        return Number;
+                    } else {
+                        return Signal;
+                    }
+            }
+        }
 
         @Override
         public String toString() {
-            return HopperlangUtils.conditionToString(pool, this);
+            switch (this) {
+                case Plus:
+                    return "+";
+                case Minus:
+                    return "-";
+                default:
+                    return "";
+
+            }
         }
     }
 
-    public static enum ConditionPart {
-        Signal,
+    public static class Condition {
+        List<Conjunction> conjunctions =  new ArrayList<>();
+        List<Comparison> comparisons = new ArrayList<>();
+        List<String> usedSignals =  new ArrayList<>();
+        private SignalPool pool;
+        public Condition(SignalPool pool, HopperlangParser.ConditionContext ctx) {
+            this.pool = pool;
+            initCondition(ctx);
+        }
+
+        private void initCondition(HopperlangParser.ConditionContext ctx) {
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                ParseTree child = ctx.getChild(i);
+                if(child instanceof HopperlangParser.Boolean_expressionContext) {
+                    HopperlangParser.Boolean_expressionContext expr = (HopperlangParser.Boolean_expressionContext)child;
+                    int notCount = 0;
+                    while(expr.getChildCount() == 2) {
+                        notCount++;
+                        expr = expr.boolean_expression();
+                    }
+                    boolean uneven = (notCount % 2) == 1;
+                    Comparison comparison = new Comparison(pool, expr.comparison(), uneven);
+                    comparisons.add(comparison);
+                    this.usedSignals.addAll(comparison.usedSignals);
+
+                } else if (child instanceof HopperlangParser.ConjunctionContext) {
+                    conjunctions.add(Conjunction.parse(child.getText()));
+                } else if (child instanceof HopperlangParser.ConditionContext) {
+                    initCondition((HopperlangParser.ConditionContext)child);
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+
+            for(int i = 0; i < comparisons.size(); i++) {
+                builder.append(comparisons.get(i));
+                if(i < comparisons.size()-1) {
+                    builder.append(" ");
+                    builder.append(conjunctions.get(i));
+                    builder.append(" ");
+                }
+            }
+            return builder.toString();
+        }
+
+        public String getCasted() {
+            StringBuilder builder = new StringBuilder();
+
+            for(int i = 0; i < comparisons.size(); i++) {
+                builder.append(comparisons.get(i).getCasted());
+                if(i < comparisons.size()-1) {
+                    builder.append(" ");
+                    builder.append(conjunctions.get(i));
+                    builder.append(" ");
+                }
+            }
+            return builder.toString();
+        }
+    }
+
+    public static class Comparison extends Assignment {
+        Unary unaryOperator;
+        public Comparison( SignalPool pool, HopperlangParser.ComparisonContext ctx, boolean inverted) {
+            super(pool, ctx.assignment_left().getText(), new AssignmentRight(pool, ctx.assignment_right()));
+            unaryOperator = Unary.parse(ctx.unary_operator().getText());
+            if(inverted) {
+                unaryOperator = HopperlangUtils.getOpositeUnary(unaryOperator);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return leftSide+" "+unaryOperator.toString()+" "+rightSide;
+        }
+
+        @Override
+        public String getCasted() {
+            Signal signal = pool.getSignal(leftSide);
+            return leftSide+" "+unaryOperator.toString()+" "+rightSide.getCastedToType(signal);
+        }
+    }
+
+    public enum Unary {
         Lower,
         LowerEquals,
         Equals,
         Greater,
         GreaterEquals,
-        Unequal,
-        Number,
-        OpenBracket,
-        CloseBracket,
-        And,
-        Or,
-        Xor;
+        Unequal;
 
-        public static final ConditionPart parse(String value) {
+        public static final Unary parse(String value) {
             switch (value.toUpperCase()) {
                 case "=":
                     return Equals;
                 case "/=":
                     return Unequal;
-                case "(":
-                    return OpenBracket;
-                case ")":
-                    return CloseBracket;
-                case "AND":
-                    return And;
-                case "OR":
-                    return Or;
-                case "XOR":
-                    return Xor;
                 case "<":
                     return Lower;
                 case "<=":
@@ -455,39 +586,59 @@ public class HopperlangCompiler {
                 case ">=":
                     return GreaterEquals;
                 default:
-                    if (HopperlangUtils.isIntegerNumeric(value)) {
-                        return Number;
-                    }
-                    return Signal;
-
+                    return Equals;
             }
         }
 
         @Override
         public String toString() {
             switch(this) {
-                case Equals:
-                    return "=";
-                case Unequal:
-                    return "/=";
-                case And:
-                    return "AND";
-                case CloseBracket:
-                    return ")";
-                case OpenBracket:
-                    return "(";
-                case Or:
-                    return "OR";
-                case Xor:
-                    return "XOR";
                 case Lower:
                     return "<";
                 case LowerEquals:
                     return "<=";
-                case Greater:
-                    return ">";
+                case Equals:
+                    return "=";
+                case Unequal:
+                    return "/=";
                 case GreaterEquals:
                     return ">=";
+                case Greater:
+                    return ">";
+                default:
+                    return "";
+            }
+        }
+    }
+
+    public enum Conjunction {
+
+        And,
+        Or,
+        Xor;
+
+        public static final Conjunction parse(String value) {
+            switch (value.toUpperCase()) {
+                case "AND":
+                    return And;
+                case "OR":
+                    return Or;
+                case "XOR":
+                    return Xor;
+                default:
+                    return And;
+            }
+        }
+
+        @Override
+        public String toString() {
+            switch(this) {
+                case And:
+                    return "AND";
+                case Or:
+                    return "OR";
+                case Xor:
+                    return "XOR";
                 default:
                     return "";
             }

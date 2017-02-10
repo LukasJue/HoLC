@@ -7,7 +7,7 @@ automat halbierer do
 		help=0
 		y=0
 		help2=1		
-		when (help<0) and not(help2<=help) goto s1
+		when (help < help2 + 1) and not(help2<=help) goto s1
 	end
 
 	state s1 do

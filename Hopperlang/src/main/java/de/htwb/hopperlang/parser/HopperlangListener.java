@@ -218,15 +218,15 @@ public interface HopperlangListener extends ParseTreeListener {
 	 */
 	void exitAssignment_right(HopperlangParser.Assignment_rightContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link HopperlangParser#name}.
+	 * Enter a parse tree produced by {@link HopperlangParser#assignment_operator}.
 	 * @param ctx the parse tree
 	 */
-	void enterName(HopperlangParser.NameContext ctx);
+	void enterAssignment_operator(HopperlangParser.Assignment_operatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link HopperlangParser#name}.
+	 * Exit a parse tree produced by {@link HopperlangParser#assignment_operator}.
 	 * @param ctx the parse tree
 	 */
-	void exitName(HopperlangParser.NameContext ctx);
+	void exitAssignment_operator(HopperlangParser.Assignment_operatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link HopperlangParser#unary_operator}.
 	 * @param ctx the parse tree
@@ -247,4 +247,24 @@ public interface HopperlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitType(HopperlangParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(HopperlangParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(HopperlangParser.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HopperlangParser#name}.
+	 * @param ctx the parse tree
+	 */
+	void enterName(HopperlangParser.NameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HopperlangParser#name}.
+	 * @param ctx the parse tree
+	 */
+	void exitName(HopperlangParser.NameContext ctx);
 }

@@ -27,6 +27,8 @@ GREATER_EQUAL: '>=';
 GREATER: '>';
 OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';
+PLUS: '+';
+MINUS: '-';
 
 BIT : 'bit';
 BUS : 'bus'[0-9]+;
@@ -107,9 +109,13 @@ assignment : assignment_left  EQUAL assignment_right
 assignment_left: name
                 ;
 assignment_right: name
-                | NUMBER
+                | number
+                | name assignment_operator assignment_right
+                | number assignment_operator assignment_right
                 ;
-name : NAME;
+assignment_operator: PLUS
+                    | MINUS
+                    ;
 
 unary_operator: LOWER
                 | LOWER_EQUAL
@@ -122,5 +128,7 @@ type : BIT
       | HILO
       | INT;
 
+number: NUMBER;
 
+name : NAME;
 
