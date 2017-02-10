@@ -329,7 +329,8 @@ public class HopperlangCompiler {
         public Assignment(SignalPool pool, HopperlangParser.AssignmentContext ctx) {
             leftSide = ctx.assignment_left().getText();
             rightSide = new AssignmentRight(pool, ctx.assignment_right());
-            usedSignals = rightSide.usedSignals;
+            usedSignals.addAll(rightSide.usedSignals);
+            usedSignals.add(leftSide);
             this.pool = pool;
         }
 
@@ -337,7 +338,8 @@ public class HopperlangCompiler {
             this.leftSide = leftSide;
             this.rightSide = rightSide;
             this.pool = pool;
-            usedSignals = rightSide.usedSignals;
+            usedSignals.addAll(rightSide.usedSignals);
+            usedSignals.add(leftSide);
         }
 
         @Override
