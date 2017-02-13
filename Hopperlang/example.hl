@@ -1,7 +1,10 @@
-signal output y hilo
-signal local help int2
-signal local help2 bus2
+signal output count hilo
+signal local local_count int2
 
 automat halbierer do
-
+	state s0 do
+		local_count = local_count+1
+		count = local_count
+		when (local_count > local_count - local_count) goto s0
+	end
 end

@@ -102,4 +102,10 @@ public final class HopperlangUtils {
                 return part;
         }
     }
+
+    public static final boolean isStandardSignal(String signalName) {
+        return HopperlangCompiler.CLK_SIGNAL_NAME.equals(signalName) ||
+                HopperlangCompiler.RESET_SIGNAL_NAME.equals(signalName) ||
+                HopperlangCompiler.ENABLE_SIGNAL_NAME.equals(signalName);
+    }
 }

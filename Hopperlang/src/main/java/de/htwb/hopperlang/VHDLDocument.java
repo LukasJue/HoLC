@@ -70,9 +70,9 @@ public class VHDLDocument {
         builder.append(STORAGE_PROCESS_NAME+" : process(");
         builder.append(HopperlangCompiler.CLK_SIGNAL_NAME+", "+HopperlangCompiler.RESET_SIGNAL_NAME+")\n");
         builder.append("begin\n");
-        builder.append("if "+HopperlangCompiler.RESET_SIGNAL_NAME+"= '1' then\n");
+        builder.append("if "+HopperlangCompiler.RESET_SIGNAL_NAME+" = '1' then\n");
         builder.append(CURRENT_STATE+"<="+compiler.states.get(0).name+";\n");
-        builder.append("elsif "+HopperlangCompiler.ENABLE_SIGNAL_NAME+"='1' AND ");
+        builder.append("elsif "+HopperlangCompiler.ENABLE_SIGNAL_NAME+" = '1' AND ");
         builder.append("RISING_EDGE("+HopperlangCompiler.CLK_SIGNAL_NAME+") then\n");
         builder.append(CURRENT_STATE+"<="+NEXT_STATE+";\n");
         if(compiler.states.size() > 0) {

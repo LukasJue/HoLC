@@ -35,19 +35,27 @@ public class HopperlangCompiler {
         signals.addInputSignal(new Signal(SignalPos.INPUT, RESET_SIGNAL_NAME, new Type(SignalType.LOGIC, 1)));
         signals.addInputSignal(new Signal(SignalPos.INPUT, ENABLE_SIGNAL_NAME, new Type(SignalType.LOGIC, 1)));
 
-        for(HopperlangParser.Signal_valueContext ctx : pool.getLocalSignals()) {
-            signals.addLocalSignal(new Signal(SignalPos.LOCAL, ctx));
-        }
-
-        for(HopperlangParser.Signal_valueContext ctx : pool.getInputSignals()) {
-            signals.addInputSignal(new Signal(SignalPos.INPUT, ctx));
-        }
-        for(HopperlangParser.Signal_valueContext ctx : pool.getOutputSignals()) {
-            signals.addOutputSignal(new Signal(SignalPos.OUTPUT, ctx));
-        }
+        addSignalsToPool(pool.getInputSignals(), SignalPos.INPUT);
+        addSignalsToPool(pool.getOutputSignals(), SignalPos.OUTPUT);
+        addSignalsToPool(pool.getLocalSignals(), SignalPos.LOCAL);
 
         for(HopperlangParser.State_blockContext state : pool.getStates()) {
             states.add(new State(state, pool, signals));
+        }
+    }
+
+    private void addSignalsToPool(List<HopperlangParser.Signal_valueContext> list, SignalPos modifier) {
+        for(HopperlangParser.Signal_valueContext ctx : list) {
+            String name = ctx.name().getText();
+            if(signals.containsSignal(name)) {
+                if(HopperlangUtils.isStandardSignal(name)) {
+                    System.err.println("Hopperlang is adding '"+name+"' on it's own!");
+                } else {
+                    System.err.println("Duplicate declaration of signal name: "+ctx.name().getText());
+                }
+            } else {
+                signals.addSignal(modifier, new Signal(modifier, ctx));
+            }
         }
     }
 
@@ -399,7 +407,7 @@ public class HopperlangCompiler {
                 }
             }
             if(parts.size() > 1) {
-                builder.append(" )");
+                builder.append(")");
             }
             return builder.toString();
         }
@@ -425,7 +433,7 @@ public class HopperlangCompiler {
                 }
             }
             if(parts.size() > 1) {
-                builder.append(" )");
+                builder.append(")");
             }
             return builder.toString();
         }

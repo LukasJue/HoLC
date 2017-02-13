@@ -35,7 +35,7 @@ BUS : 'bus'[0-9]+;
 HILO: 'hilo';
 INT : 'int'[0-9]+;
 
-NAME : [a-zA-Z][a-zA-Z0-9]* ;
+NAME : [a-zA-Z][a-zA-Z0-9_]* ;
 COMMENT: '#'.*? -> skip;
 MULTILINE_COMMENT:  '/*' .*? '*/' -> skip;
 
