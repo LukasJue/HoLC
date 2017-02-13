@@ -21,6 +21,10 @@ public class VHDLDocument {
     public VHDLDocument(HopperlangCompiler compiler) {
         this.compiler = compiler;
         this.automateName = compiler.automateName;
+        if(compiler.states.size() < 1) {
+            System.err.println("No states declared! Generating VHDL won't make sense...");
+            System.exit(1);
+        }
         fill();
     }
 
@@ -71,24 +75,28 @@ public class VHDLDocument {
         builder.append("elsif "+HopperlangCompiler.ENABLE_SIGNAL_NAME+"='1' AND ");
         builder.append("RISING_EDGE("+HopperlangCompiler.CLK_SIGNAL_NAME+") then\n");
         builder.append(CURRENT_STATE+"<="+NEXT_STATE+";\n");
-        builder.append("case "+CURRENT_STATE+ " is\n");
-        for(HopperlangCompiler.State state : compiler.states) {
-            if(state.assignments.size() > 0) {
-                builder.append(createAssignmentCase(state));
+        if(compiler.states.size() > 0) {
+            builder.append("case " + CURRENT_STATE + " is\n");
+            for (HopperlangCompiler.State state : compiler.states) {
+                if (state.assignments.size() > 0) {
+                    builder.append(createAssignmentCase(state));
+                }
             }
+            builder.append("end case;\n");
         }
-        builder.append("end case;\n");
         builder.append("end if;\nend process "+STORAGE_PROCESS_NAME+";\n");
         builder.append("\n\n");
 
         builder.append(MEMORY_PROCESS_NAME+" : process(");
         builder.append(CURRENT_STATE+")\n");
         builder.append("begin\n");
-        builder.append("case "+CURRENT_STATE+" is\n");
-        for(HopperlangCompiler.State state : compiler.states) {
-            builder.append(createStateCase(state));
+        if(compiler.states.size() > 0) {
+            builder.append("case " + CURRENT_STATE + " is\n");
+            for (HopperlangCompiler.State state : compiler.states) {
+                builder.append(createStateCase(state));
+            }
+            builder.append("end case;\n");
         }
-        builder.append("end case;\n");
         builder.append("end process "+MEMORY_PROCESS_NAME+";\n");
 
 
@@ -134,29 +142,33 @@ public class VHDLDocument {
 
     private String createStateCase(HopperlangCompiler.State state) {
         StringBuilder builder = new StringBuilder();
-        builder.append("when "+state.name+" => ");
-        for (int i = 0; i < state.getTransitions().size(); i++) {
-            if(i == 0) {
-                builder.append("if ");
-            } else {
-                builder.append("elsif ");
+        if(state.transitions.size() > 0) {
+            builder.append("when " + state.name + " => ");
+            for (int i = 0; i < state.getTransitions().size(); i++) {
+                if (i == 0) {
+                    builder.append("if ");
+                } else {
+                    builder.append("elsif ");
+                }
+                HopperlangCompiler.Transition transition = state.getTransitions().get(i);
+                builder.append(transition.getCastedCondition());
+                builder.append("then\n");
+                builder.append(NEXT_STATE + "<=" + transition.dst + ";\n");
             }
-            HopperlangCompiler.Transition transition = state.getTransitions().get(i);
-            builder.append(transition.getCastedCondition());
-            builder.append("then\n");
-            builder.append(NEXT_STATE+"<="+transition.dst+";\n");
+            builder.append("end if;\n");
         }
-        builder.append("end if;\n");
         return builder.toString();
     }
 
     private String createAssignmentCase(HopperlangCompiler.State  state) {
         StringBuilder builder = new StringBuilder();
-        builder.append("when "+state.name+" => ");
-        for (int i = 0; i < state.getAssignments().size(); i++) {
-            HopperlangCompiler.Assignment assignment = state.getAssignments().get(i);
-            builder.append(assignment.getCasted());
-            builder.append(";\n");
+        if(state.assignments.size() > 0) {
+            builder.append("when " + state.name + " => ");
+            for (int i = 0; i < state.getAssignments().size(); i++) {
+                HopperlangCompiler.Assignment assignment = state.getAssignments().get(i);
+                builder.append(assignment.getCasted());
+                builder.append(";\n");
+            }
         }
         return builder.toString();
     }
