@@ -21,13 +21,13 @@ public class HopperlangCompiler {
     String automateName;
 
 
-    public HopperlangCompiler(NodePool pool) {
+    public HopperlangCompiler(ContextPool pool) {
         if(pool.isFilled()) {
             init(pool);
         }
     }
 
-    private void init(NodePool pool) {
+    private void init(ContextPool pool) {
 
         automateName = pool.getAutomateName();
 
@@ -226,7 +226,7 @@ public class HopperlangCompiler {
         List<Assignment> assignments = new ArrayList<>();
         List<Transition> transitions = new ArrayList<>();
 
-        public State(HopperlangParser.State_blockContext ctx, NodePool pool, SignalPool signalPool) {
+        public State(HopperlangParser.State_blockContext ctx, ContextPool pool, SignalPool signalPool) {
             name = ctx.name().getText();
             HopperlangParser.State_bodyContext body = ctx.state_body();
             //StateBodyElements
@@ -240,7 +240,7 @@ public class HopperlangCompiler {
                 }
             }
 
-            for(NodePool.Transition transition : pool.getTransitions()) {
+            for(ContextPool.Transition transition : pool.getTransitions()) {
                 if(transition.src.equals(name)) {
                     transitions.add(new Transition(transition, signalPool));
                 }
@@ -268,7 +268,7 @@ public class HopperlangCompiler {
         List<Condition> conditions = new ArrayList<>();
         List<String> usedSignals = new ArrayList<>();
 
-        public Transition(NodePool.Transition transition, SignalPool pool) {
+        public Transition(ContextPool.Transition transition, SignalPool pool) {
             this.src = transition.src;
             this.dst = transition.dst;
             for(int i = 0; i < transition.conditions.size(); i++) {

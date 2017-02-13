@@ -64,7 +64,7 @@ public class Main {
 
             HopperlangParser parser = new HopperlangParser(tokens);
             System.out.println("Phase 1: Context aggregation");
-            final NodePool nodes = new NodePool(parser);
+            final ContextPool nodes = new ContextPool(parser);
             nodes.fill();
             System.out.println("Phase 2: Creating formal structures");
             final HopperlangCompiler compiler = new HopperlangCompiler(nodes);

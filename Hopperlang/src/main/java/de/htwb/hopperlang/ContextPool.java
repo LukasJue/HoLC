@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by juene on 01.02.2017.
  */
-public class NodePool extends HopperlangBaseListener {
+public class ContextPool extends HopperlangBaseListener {
 
     private List<HopperlangParser.Signal_valueContext> localSignals = new ArrayList<>();
     private List<HopperlangParser.Signal_valueContext> inputSignals = new ArrayList<>();
@@ -27,7 +27,7 @@ public class NodePool extends HopperlangBaseListener {
     private HopperlangParser parser;
     private boolean filled;
 
-    public NodePool(HopperlangParser parser) {
+    public ContextPool(HopperlangParser parser) {
         this.parser = parser;
     }
 
